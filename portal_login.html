@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>🔐 IT Support Portal — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#f0f4f8;--card:#ffffff;--blue:#2563eb;--violet:#7c3aed;--cyan:#0891b2;--t1:#0f172a;--t2:#334155;--t3:#64748b;--bdr:#e2e8f0;--err:#e11d48}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans Thai','Inter',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+
+    /* Animated background */
+    .bg-anim{position:fixed;inset:0;z-index:0}
+    .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;animation:float 8s ease-in-out infinite}
+    .orb1{width:500px;height:500px;background:radial-gradient(circle,#3b82f6,transparent);top:-100px;left:-100px;animation-delay:0s}
+    .orb2{width:400px;height:400px;background:radial-gradient(circle,#7c3aed,transparent);bottom:-80px;right:-80px;animation-delay:3s}
+    .orb3{width:300px;height:300px;background:radial-gradient(circle,#0891b2,transparent);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.5s}
+    @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+    .orb3{animation-name:float2}@keyframes float2{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-60%) scale(1.1)}}
+
+    /* Grid overlay */
+    .grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);background-size:50px 50px}
+
+    /* Card */
+    .card{position:relative;z-index:10;width:100%;max-width:440px;margin:20px;background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;padding:48px 40px;box-shadow:0 20px 60px rgba(0,0,0,.08),0 4px 16px rgba(37,99,235,.06)}
+
+    /* Logo */
+    .logo{text-align:center;margin-bottom:36px}
+    .logo-icon{width:72px;height:72px;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #e2e8f0;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 4px 16px rgba(37,99,235,.1)}
+    .logo h1{font-size:22px;font-weight:700;background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+    .logo p{font-size:12px;color:var(--t3)}
+
+    /* Divider */
+    .div{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+    .div-line{flex:1;height:1px;background:#e2e8f0}
+    .div-txt{font-size:11px;color:var(--t3);white-space:nowrap}
+
+    /* Form */
+    .fg{margin-bottom:18px}
+    label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+    .input-wrap{position:relative}
+    .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;z-index:1}
+    input{width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;color:var(--t1);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;padding:13px 14px 13px 42px;outline:none;transition:all .2s}
+    input:focus{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+    input::placeholder{color:var(--t3)}
+    .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;padding:4px;transition:color .2s}
+    .eye-btn:hover{color:var(--t2)}
+
+    /* Error */
+    .err-msg{display:none;align-items:center;gap:8px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#fb7185;animation:shake .4s ease}
+    .err-msg.show{display:flex}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+    /* Button */
+    .btn-login{width:100%;background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:12px;color:#fff;font-family:'Noto Sans Thai','Inter',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin-top:8px}
+    .btn-login::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#1d4ed8,#6d28d9);opacity:0;transition:opacity .2s}
+    .btn-login:hover::before{opacity:1}
+    .btn-login:active{transform:scale(.98)}
+    .btn-login span{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-login.loading{pointer-events:none;opacity:.8}
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn-login.loading .spinner{display:block}
+    .btn-login.loading .btn-txt{display:none}
+
+    /* Footer */
+    .footer{text-align:center;margin-top:28px;font-size:11px;color:var(--t3)}
+    .footer strong{color:var(--t2)}
+
+    /* Version badge */
+    .ver{position:fixed;bottom:16px;right:16px;font-size:10px;color:var(--t3);z-index:10;background:#ffffff;padding:4px 10px;border-radius:20px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+    /* ── Theme toggle button ─────────────────────────────────────── */
+    .theme-btn{position:fixed;top:16px;right:16px;z-index:999;width:40px;height:40px;border-radius:50%;border:1px solid #e2e8f0;background:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:all .2s}
+    .theme-btn:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(0,0,0,.15)}
+    /* ── Dark theme overrides ────────────────────────────────────── */
+    body.dark{--bg:#060b18;--card:#0d1628;--blue:#3b82f6;--violet:#8b5cf6;--cyan:#06b6d4;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--bdr:#1e3a5f;--err:#f43f5e}
+    body.dark .card{background:rgba(13,22,40,.85);border-color:rgba(59,130,246,.2);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    body.dark .logo-icon{background:linear-gradient(135deg,#1e3a5f,#1e2d4f);border-color:rgba(59,130,246,.3)}
+    body.dark input{background:rgba(255,255,255,.05);border-color:rgba(59,130,246,.2);color:#f1f5f9}
+    body.dark input:focus{border-color:rgba(59,130,246,.6);background:rgba(59,130,246,.06)}
+    body.dark .div-line{background:linear-gradient(90deg,transparent,rgba(59,130,246,.3),transparent)}
+    body.dark .theme-btn{background:#0d1628;border-color:#1e3a5f;color:#f1f5f9}
+    body.dark .ver{background:rgba(0,0,0,.4);border-color:rgba(255,255,255,.05)}
+    /* Dog GIF right side */
+  </style>
+</head>
+<body>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="เปลี่ยนธีม">☀️</button>
+<div class="bg-anim">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="grid"></div>
+
+<div class="card">
+  <div class="logo">
+    <img src="logo_anim.gif" alt="logo" style="width:90px;height:90px;border-radius:16px;object-fit:cover;margin:0 auto 16px;display:block;box-shadow:0 4px 16px rgba(37,99,235,.15)"/>
+    <h1>IT Support Portal</h1>
+    <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+  </div>
+
+  <div class="div">
+    <div class="div-line"></div>
+    <span class="div-txt">เข้าสู่ระบบด้วยบัญชี IT</span>
+    <div class="div-line"></div>
+  </div>
+
+  <div class="err-msg" id="errMsg">
+    <span>⚠️</span>
+    <span id="errTxt">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+  </div>
+
+  <form onsubmit="doLogin(event)">
+    <div class="fg">
+      <label>ชื่อผู้ใช้</label>
+      <div class="input-wrap">
+        <span class="input-icon">👤</span>
+        <input type="text" id="uname" placeholder="กรอกชื่อผู้ใช้" autocomplete="username" autocapitalize="none" required/>
+      </div>
+    </div>
+    <div class="fg">
+      <label>รหัสผ่าน</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="upass" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" required/>
+        <button type="button" class="eye-btn" id="eyeBtn" onclick="togglePass()">👁</button>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-login" id="loginBtn">
+      <span>
+        <div class="spinner"></div>
+        <span class="btn-txt">เข้าสู่ระบบ →</span>
+      </span>
+    </button>
+  </form>
+
+  <div style="margin-top:20px;text-align:center;"><a href="claim_tracking.html" style="font-size:13px;color:#60a5fa;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:6px;background:rgba(59,130,246,0.1);padding:8px 16px;border-radius:20px;border:1px solid rgba(59,130,246,0.25);">🔍 ลูกค้าตรวจสอบสถานะเคลมที่นี่ →</a></div>
+
+  <div class="footer">
+    ระบบสำหรับ <strong>ทีม IT Support</strong> เท่านั้น<br/>
+    ติดต่อ Admin หากลืมรหัสผ่าน
+  </div>
+</div>
+
+
+
+<script>
+// ── Accounts Config — แก้ไขได้ที่นี่ ──────────────────────────────────────
+const ACCOUNTS = {
+  'admin': { password: 'admin123', name: 'Admin',         role: 'admin' },
+  'sun':   { password: 'sun1234',  name: 'ซัน',            role: 'it' },
+  'tom':   { password: 'tom1234',  name: 'ต้อม (ฝึกงาน)',   role: 'it' },
+};
+
+// Check already logged in
+if (sessionStorage.getItem('it_portal_user')) {
+  window.location.replace('portal_home.html');
+}
+
+function doLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.classList.add('loading');
+
+  setTimeout(() => {
+    const u = document.getElementById('uname').value.trim().toLowerCase();
+    const p = document.getElementById('upass').value;
+    const acc = ACCOUNTS[u];
+
+    if (acc && acc.password === p) {
+      sessionStorage.setItem('it_portal_user', JSON.stringify({ username: u, name: acc.name, role: acc.role }));
+      window.location.replace('portal_home.html');
+    } else {
+      btn.classList.remove('loading');
+      const err = document.getElementById('errMsg');
+      err.classList.add('show');
+      document.getElementById('upass').value = '';
+      document.getElementById('upass').focus();
+      setTimeout(() => err.classList.remove('show'), 4000);
+    }
+  }, 600);
+}
+
+function togglePass() {
+  const inp = document.getElementById('upass');
+  const btn = document.getElementById('eyeBtn');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+document.getElementById('uname').focus();
+
+// ── Theme Toggle ─────────────────────────────────────────────────────────
+const THEME_KEY = 'portal_theme';
+function applyTheme(t) {
+  if (t === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  else { document.body.classList.remove('dark'); document.getElementById('themeBtn').textContent = '🌙'; }
+}
+function toggleTheme() {
+  const isDark = document.body.classList.contains('dark');
+  const next = isDark ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next); applyTheme(next);
+}
+applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+</script>
+<script src="turtle.js"></script>
+</body>
+</html>

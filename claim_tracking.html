@@ -1,0 +1,837 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔍 ตรวจสอบสถานะการเคลมสินค้า — Claim Tracking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #0f172a;
+      --text-muted: #64748b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .hdr {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #059669, #0891b2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .staff-link {
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .staff-link:hover { text-decoration: underline; }
+
+    /* Hero Search */
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #ffffff;
+      padding: 48px 20px 36px;
+      text-align: center;
+      position: relative;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 14px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+
+    /* Search Card */
+    .search-card {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 22px 24px;
+      border-radius: 18px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+      text-align: left;
+    }
+    .search-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media(max-width:600px){ .search-grid { grid-template-columns: 1fr; } }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 0 12px;
+      transition: all 0.2s;
+    }
+    .input-wrap:focus-within {
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    .input-icon { font-size: 14px; margin-right: 8px; color: #94a3b8; }
+    .search-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 10px 0;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .search-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #059669, #0891b2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .search-btn:hover { opacity: 0.92; }
+
+    /* Main Container */
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 24px auto 60px;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    /* Summary Bar */
+    .summary-bar {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 24px;
+      margin-bottom: 20px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .summary-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .summary-badge {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid #bfdbfe;
+    }
+    .btn-toggle-all {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-toggle-all:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    /* Items List */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Compact Claim Card */
+    .claim-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .claim-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+
+    /* Card Header (Summary Row) */
+    .card-summary-row {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 16px;
+      background: #ffffff;
+      transition: background 0.2s;
+    }
+    .card-summary-row:hover {
+      background: #fbfcfe;
+    }
+    .card-main-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+    .item-index {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      min-width: 32px;
+      text-align: center;
+    }
+    .item-claim-no {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.3px;
+    }
+    .item-model-tag {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .card-right-action {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Expand Button */
+    .btn-expand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s;
+    }
+    .claim-card.open .btn-expand {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #93c5fd;
+    }
+    .arrow-icon {
+      transition: transform 0.3s ease;
+      font-size: 10px;
+    }
+    .claim-card.open .arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Expanded Details Body */
+    .card-details-body {
+      display: none;
+      padding: 24px;
+      border-top: 1px dashed var(--border);
+      background: #fafcff;
+      animation: fadeIn 0.25s ease;
+    }
+    .claim-card.open .card-details-body {
+      display: block;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-done { background: rgba(16,185,129,.12); color: #059669; border: 1px solid rgba(16,185,129,.3); }
+    .badge-amber { background: rgba(245,158,11,.12); color: #d97706; border: 1px solid rgba(245,158,11,.3); }
+    .badge-blue { background: rgba(59,130,246,.12); color: #2563eb; border: 1px solid rgba(59,130,246,.3); }
+    .badge-purple { background: rgba(139,92,246,.12); color: #7c3aed; border: 1px solid rgba(139,92,246,.3); }
+    .badge-red { background: rgba(239,68,68,.12); color: #dc2626; border: 1px solid rgba(239,68,68,.3); }
+    .badge-gray { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+
+    /* 5-Step Stepper */
+    .stepper-wrap {
+      margin: 10px 0 24px;
+      background: #ffffff;
+      padding: 18px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      position: relative;
+    }
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .step-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .step.active .step-icon {
+      border-color: #059669;
+      background: #059669;
+      color: #ffffff;
+    }
+    .step.current .step-icon {
+      border-color: #2563eb;
+      background: #ffffff;
+      color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+    .step.active .step-label, .step.current .step-label {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* Details Grid */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .d-item {
+      background: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .d-label { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+    .d-val { font-size: 13.5px; font-weight: 600; color: var(--text); word-break: break-word; }
+
+    /* Notes Box */
+    .notes-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      background: #ffffff;
+    }
+    .notes-title { font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+    .notes-content { font-size: 13px; line-height: 1.5; }
+
+    /* Empty State */
+    .empty-state {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      display: none;
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-desc { font-size: 13px; color: var(--text-muted); }
+
+    /* Footer */
+    .ftr {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="hdr">
+    <a href="claim_tracking.html" class="logo">
+      <div class="logo-icon">📦</div>
+      <span>ระบบติดตามการเคลมสินค้า</span>
+    </a>
+    <a href="portal_login.html" class="staff-link">🔐 เข้าสู่ระบบเจ้าหน้าที่</a>
+  </header>
+
+  <!-- Hero Search Section -->
+  <section class="hero">
+    <h1>ตรวจสอบสถานะการเคลมสินค้า</h1>
+    <p>กรุณากรอก <strong>ชื่อเต็มของบริษัท</strong> (หรือ Claim No. / Serial No.) และ <strong>เบอร์โทรศัพท์</strong></p>
+    
+    <div class="search-card">
+      <div class="search-grid">
+        <div class="input-group">
+          <label>1. ชื่อเต็มของบริษัท / Claim No. / Serial No. <span style="color:#ef4444">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">🏢</span>
+            <input type="text" id="inputQuery" class="search-input" placeholder="พิมพ์ชื่อเต็มของบริษัท (เช่น บริษัท แอดไวซ์ ตาคลี จำกัด)" autofocus>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>2. เบอร์โทรศัพท์ที่แจ้งเคลม <span style="color:#ef4444">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="inputPhone" class="search-input" placeholder="ระบุเบอร์โทรศัพท์ที่แจ้งเคลม">
+          </div>
+        </div>
+      </div>
+      <button class="search-btn" onclick="doSearch()">
+        <span>🔍 ค้นหารายการเคลม</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container">
+    
+    <!-- Summary Bar -->
+    <div id="summaryBar" class="summary-bar">
+      <div class="summary-left">
+        <div class="summary-title" id="summaryTitle">รายการเคลมสินค้า</div>
+        <div class="summary-badge" id="summaryCount">พบ 0 รายการ</div>
+      </div>
+      <button class="btn-toggle-all" id="btnToggleAll" onclick="toggleAllCards()">ขยายดูทั้งหมด ▾</button>
+    </div>
+
+    <!-- Items List Container -->
+    <div id="itemsContainer" class="items-list"></div>
+
+    <!-- Empty/Not Found Card -->
+    <div id="emptyCard" class="empty-state">
+      <div class="empty-icon">🔒</div>
+      <div class="empty-title">ไม่พบข้อมูลการเคลม หรือข้อมูลไม่ถูกต้อง</div>
+      <div class="empty-desc">
+        กรุณาตรวจสอบ <strong>ชื่อเต็มของบริษัท</strong> (ต้องพิมพ์ชื่อเต็มให้ถูกต้อง) และ <strong>เบอร์โทรศัพท์</strong>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="ftr">
+    © 2026 IT Support &amp; Claim Tracking Portal — ข้อมูลอัปเดตแบบเรียลไทม์จากระบบ
+  </footer>
+
+  <script>
+    const CLAIM_CSV_URL = 'https://docs.google.com/spreadsheets/d/1t7gAAeY1NMA88TvNTmHBgW2P4rIWQflFixosKTVXcuA/export?format=csv&gid=1647538212';
+    let claimData = [];
+    let isAllExpanded = false;
+
+    function pRow(ln) {
+      const r = []; let c = '', q = false;
+      for (let i = 0; i < ln.length; i++) {
+        const ch = ln[i];
+        if (ch === '"') { if (q && ln[i+1] === '"') { c += '"'; i++; } else q = !q; }
+        else if (ch === ',' && !q) { r.push(c); c = ''; }
+        else c += ch;
+      }
+      r.push(c); return r;
+    }
+
+    function pCSV(txt) {
+      const ls = txt.trim().split('\n');
+      if (ls.length < 2) return [];
+      const hs = pRow(ls[0]);
+      const rows = [];
+      for (let i = 1; i < ls.length; i++) {
+        const vs = pRow(ls[i]);
+        if (vs.every(v => v.trim() === '')) continue;
+        const o = {};
+        hs.forEach((h, idx) => {
+          o[h.trim()] = (vs[idx] || '').trim();
+        });
+        if (o['Claim No.'] && o['Claim No.'].trim() !== '') {
+          rows.push(o);
+        }
+      }
+      return rows;
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(CLAIM_CSV_URL + '&nocache=' + Date.now(), { cache: 'no-store' });
+        const text = await res.text();
+        claimData = pCSV(text);
+        console.log('Claim records parsed:', claimData.length);
+      } catch (e) {
+        console.error('Failed to load CSV:', e);
+      }
+    }
+
+    loadData();
+
+    // Trigger Search on Enter
+    ['inputQuery', 'inputPhone'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doSearch();
+      });
+    });
+
+    function cleanPhone(p) {
+      return (p || '').replace(/\D/g, '');
+    }
+
+    // ฟังก์ชันจัดระเบียบข้อความเพื่อเทียบชื่อเต็ม (ตัดเว้นวรรคซ้ำ, ลบช่องว่างหัวท้าย, ตัวพิมพ์เล็ก)
+    function normText(s) {
+      return (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
+    async function doSearch() {
+      const rawQ = document.getElementById('inputQuery').value;
+      const q = normText(rawQ);
+      const phoneInput = document.getElementById('inputPhone').value.trim();
+
+      if (!q) {
+        alert('กรุณากรอกชื่อเต็มของบริษัท หรือหมายเลข Claim No./Serial No.');
+        document.getElementById('inputQuery').focus();
+        return;
+      }
+      if (!phoneInput) {
+        alert('กรุณากรอกเบอร์โทรศัพท์ที่แจ้งเคลม เพื่อยืนยันตัวตน');
+        document.getElementById('inputPhone').focus();
+        return;
+      }
+
+      if (!claimData.length) await loadData();
+
+      const userDigits = cleanPhone(phoneInput);
+
+      // เงื่อนไข: ต้องตรงกับ "ชื่อเต็มของบริษัท" (Exact Full Match) หรือ "Claim No." หรือ "Serial" ตรงเป๊ะ + เบอร์โทรตรง
+      const matches = claimData.filter(r => {
+        const cNo = normText(r['Claim No.']);
+        const sn  = normText(r['Serial']);
+        const cu  = normText(r['Customer']);
+        const us  = normText(r['User']);
+        const claimPhone = cleanPhone(r['Phone Customer'] || '');
+
+        // 1. Phone match
+        const isMatchPhone = claimPhone && (
+          claimPhone === userDigits ||
+          claimPhone.endsWith(userDigits) ||
+          userDigits.endsWith(claimPhone)
+        );
+
+        // 2. Exact Match: ต้องตรงกับชื่อเต็ม (User หรือ Customer) หรือ รหัส Claim / Serial
+        const isExactCompany = (us === q || cu === q);
+        const isExactClaimOrSerial = (cNo === q || sn === q);
+
+        return isMatchPhone && (isExactCompany || isExactClaimOrSerial);
+      });
+
+      const summaryBar = document.getElementById('summaryBar');
+      const itemsContainer = document.getElementById('itemsContainer');
+      const emptyCard = document.getElementById('emptyCard');
+
+      if (matches.length > 0) {
+        emptyCard.style.display = 'none';
+        
+        const companyName = matches[0]['User'] || matches[0]['Customer'] || 'ลูกค้า';
+        document.getElementById('summaryTitle').textContent = `🏢 ${companyName}`;
+        document.getElementById('summaryCount').textContent = `พบ ${matches.length} รายการเคลม`;
+        summaryBar.style.display = 'flex';
+        isAllExpanded = false;
+        document.getElementById('btnToggleAll').textContent = 'ขยายดูทั้งหมด ▾';
+
+        // Render compact accordion items
+        itemsContainer.innerHTML = matches.map((item, idx) => renderCompactItemCard(item, idx + 1, matches.length)).join('');
+        summaryBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        summaryBar.style.display = 'none';
+        itemsContainer.innerHTML = '';
+        emptyCard.style.display = 'block';
+        emptyCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function toggleCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const isOpen = card.classList.toggle('open');
+      const btn = card.querySelector('.btn-expand-txt');
+      if (btn) btn.textContent = isOpen ? 'ย่อรายละเอียด' : 'ดูรายละเอียด';
+    }
+
+    function toggleAllCards() {
+      isAllExpanded = !isAllExpanded;
+      const cards = document.querySelectorAll('.claim-card');
+      cards.forEach(card => {
+        if (isAllExpanded) {
+          card.classList.add('open');
+          const btn = card.querySelector('.btn-expand-txt');
+          if (btn) btn.textContent = 'ย่อรายละเอียด';
+        } else {
+          card.classList.remove('open');
+          const btn = card.querySelector('.btn-expand-txt');
+          if (btn) btn.textContent = 'ดูรายละเอียด';
+        }
+      });
+      document.getElementById('btnToggleAll').textContent = isAllExpanded ? 'ย่อทั้งหมด ▴' : 'ขยายดูทั้งหมด ▾';
+    }
+
+    function getStatusInfo(st) {
+      const s = (st || '').trim();
+      let badgeClass = 'status-badge badge-amber';
+      let icon = '⏳';
+      let currentStep = 1;
+
+      if (s === 'ดำเนินการเรียบร้อย') {
+        badgeClass = 'status-badge badge-done';
+        icon = '✅';
+        currentStep = 5;
+      } else if (s === 'รอส่งสินค้าคืน') {
+        badgeClass = 'status-badge badge-amber';
+        icon = '⏳';
+        currentStep = 4;
+      } else if (s === 'ส่งไปต่างประเทศ' || s === 'รอส่งต่างประเทศ' || s === 'รอรับสินค้ากลับจากต่างประเทศ' || s === 'รับสินค้ากลับจากต่างประเทศแล้ว' || s === 'รอประกอบสินค้า' || s === 'ส่งสินค้าทดแทนระหว่างเคลม') {
+        badgeClass = 'status-badge badge-blue';
+        icon = s.includes('ต่างประเทศ') ? '✈️' : (s.includes('ทดแทน') ? '🔄' : '📦');
+        currentStep = 3;
+      } else if (s === 'กำลังตรวจสอบ' || s === 'ตรวจสอบแล้ว') {
+        badgeClass = 'status-badge badge-purple';
+        icon = '🔍';
+        currentStep = 2;
+      } else if (s.toLowerCase().includes('waranty') || s.toLowerCase().includes('warranty')) {
+        badgeClass = 'status-badge badge-red';
+        icon = '🛑';
+        currentStep = 2;
+      } else if (s === 'ไม่มีสินค้าเคลมส่งเข้ามา') {
+        badgeClass = 'status-badge badge-gray';
+        icon = '❌';
+        currentStep = 1;
+      } else {
+        badgeClass = 'status-badge badge-amber';
+        icon = '📥';
+        currentStep = 1;
+      }
+
+      return { badgeClass, icon, currentStep, label: s || 'กำลังดำเนินการ' };
+    }
+
+    function renderCompactItemCard(d, idx, total) {
+      const cardId = `claim_card_${idx}`;
+      const stInfo = getStatusInfo(d['Status']);
+      const claimNo = d['Claim No.'] || 'ไม่ระบุ';
+      const brand = d['Brand'] || '—';
+      const model = d['Model'] || '—';
+      const serial = d['Serial'] || '—';
+      const date = d['Date'] || d['Date of Claim'] || '—';
+      const customer = d['User'] || d['Customer'] || '—';
+      const symptom = d['Symptom Informed (Operation)'] || '—';
+      const inspection = d['Inspection Result (Operation)'] || 'อยู่ระหว่างตรวจเช็กโดยเจ้าหน้าที่';
+      const solution = d['Solution'] || '—';
+
+      const isOpenDefault = (total === 1);
+
+      const steps = [
+        { num: 1, label: 'รับเรื่องเคลม' },
+        { num: 2, label: 'ตรวจเช็กสินค้า' },
+        { num: 3, label: 'ซ่อม/ส่งเคลม' },
+        { num: 4, label: 'รอส่งสินค้าคืน' },
+        { num: 5, label: 'ดำเนินการเรียบร้อย' }
+      ];
+
+      const stepsHtml = steps.map(st => {
+        let cls = 'step';
+        if (st.num < stInfo.currentStep) cls = 'step active';
+        else if (st.num === stInfo.currentStep) cls = (stInfo.currentStep === 5) ? 'step active current' : 'step current';
+        return `
+          <div class="${cls}">
+            <div class="step-icon">${st.num}</div>
+            <div class="step-label">${st.label}</div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="claim-card ${isOpenDefault ? 'open' : ''}" id="${cardId}">
+          <!-- Compact Row -->
+          <div class="card-summary-row" onclick="toggleCard('${cardId}')">
+            <div class="card-main-info">
+              <span class="item-index">#${idx}</span>
+              <div class="item-claim-no">${claimNo}</div>
+              <div class="item-model-tag"><strong>${brand}</strong> ${model}</div>
+            </div>
+            
+            <div class="card-right-action">
+              <div class="${stInfo.badgeClass}">${stInfo.icon} ${stInfo.label}</div>
+              <button type="button" class="btn-expand" onclick="event.stopPropagation(); toggleCard('${cardId}');">
+                <span class="btn-expand-txt">${isOpenDefault ? 'ย่อรายละเอียด' : 'ดูรายละเอียด'}</span>
+                <span class="arrow-icon">▼</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Expanded Body -->
+          <div class="card-details-body">
+            
+            <!-- 5-Step Stepper -->
+            <div class="stepper-wrap">
+              <div class="stepper">
+                ${stepsHtml}
+              </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="details-grid">
+              <div class="d-item">
+                <div class="d-label">วันที่ส่งเคลม</div>
+                <div class="d-val" style="color:#2563eb;">${date}</div>
+              </div>
+              <div class="d-item">
+                <div class="d-label">ยี่ห้อ (Brand)</div>
+                <div class="d-val">${brand}</div>
+              </div>
+              <div class="d-item">
+                <div class="d-label">รุ่น (Model)</div>
+                <div class="d-val">${model}</div>
+              </div>
+              <div class="d-item">
+                <div class="d-label">หมายเลขเครื่อง (Serial No.)</div>
+                <div class="d-val">${serial}</div>
+              </div>
+              <div class="d-item" style="grid-column: 1 / -1;">
+                <div class="d-label">ชื่อผู้ส่งเคลม / บริษัท (USER)</div>
+                <div class="d-val" style="color:#0f172a;font-size:14px;">${customer}</div>
+              </div>
+            </div>
+
+            <!-- Symptom Informed -->
+            <div class="notes-box" style="border:1px solid #fde68a;background:#fffdf5;">
+              <div class="notes-title" style="color:#b45309">⚠️ อาการเสียที่แจ้งเบื้องต้น:</div>
+              <div class="notes-content" style="color:#92400e">${symptom}</div>
+            </div>
+
+            <!-- Inspection Result -->
+            <div class="notes-box" style="border:1px solid #bfdbfe;background:#f8fbff;">
+              <div class="notes-title" style="color:#1e40af">🔧 ผลการตรวจเช็กจากฝ่ายช่าง:</div>
+              <div class="notes-content" style="color:#1e3a8a">${inspection}</div>
+            </div>
+
+            <!-- Solution / Action -->
+            <div class="notes-box" style="border:1px solid #bbf7d0;background:#f7fef9;">
+              <div class="notes-title" style="color:#15803d">📋 แนวทางแก้ไข / การส่งคืนสินค้า:</div>
+              <div class="notes-content" style="color:#166534">${solution}</div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

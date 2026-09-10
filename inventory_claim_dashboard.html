@@ -1,0 +1,997 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>📦 Inventory Claim Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#f0f4f8;--bg2:#ffffff;--card:#ffffff;--card2:#f8fafc;--blue:#2563eb;--cyan:#0891b2;--violet:#7c3aed;--green:#059669;--amber:#d97706;--rose:#e11d48;--t1:#0f172a;--t2:#334155;--t3:#64748b;--bdr:#e2e8f0;--r:16px;--rs:8px}
+    *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{font-family:'Noto Sans Thai','Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+    .hdr{background:#ffffff;border-bottom:2px solid #e2e8f0;padding:16px 28px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+    .hdr-in{max-width:1600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .hdr-tl{display:flex;align-items:center;gap:10px}.hdr-tl .ic{font-size:28px}
+    .hdr-tl h1{font-size:19px;font-weight:700;background:linear-gradient(90deg,#60a5fa,#a78bfa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hdr-tl p{font-size:10px;color:var(--t3);margin-top:1px}
+    .hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .bdg{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;display:inline-block;margin-right:4px}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .btn-ref{background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:#06b6d4;border-radius:var(--rs);padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;gap:5px}
+    .btn-ref:hover{background:rgba(6,182,212,.2)}
+    .back-btn{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;border-radius:var(--rs);padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:4px}
+    .back-btn:hover{background:rgba(59,130,246,.2)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin-anim{animation:spin .7s linear infinite;display:inline-block}
+    .wrap{max-width:1600px;margin:0 auto;padding:20px}
+    .tabs{display:flex;gap:3px;margin-bottom:16px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:4px;width:fit-content}
+    .tb{padding:6px 15px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .2s;font-family:inherit}
+    .tb.on{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,.4)}
+    .ld-scr{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;color:var(--t3)}
+    .spinner-lg{width:40px;height:40px;border:3px solid var(--bdr);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+    .ld-txt{font-size:13px}
+    .err-box{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:var(--r);padding:20px 24px;text-align:center;margin:20px 0}
+    .err-box p{color:#fb7185;font-size:13px;margin-bottom:6px}.err-box .hint{color:var(--t3);font-size:11px}
+    .setup-box{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;margin-top:12px;font-size:12px;color:var(--t2)}
+    .kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+    .kc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:transform .2s}
+    .kc:hover{transform:translateY(-2px)}.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+    .b::before{background:linear-gradient(90deg,#3b82f6,#06b6d4)}.g::before{background:linear-gradient(90deg,#10b981,#34d399)}
+    .a::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.r::before{background:linear-gradient(90deg,#f43f5e,#fb7185)}
+    .v::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+    .kl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+    .kv{font-size:28px;font-weight:700;line-height:1}.b .kv{color:#60a5fa}.g .kv{color:#34d399}.a .kv{color:#fbbf24}.r .kv{color:#fb7185}.v .kv{color:#a78bfa}
+    .ks{font-size:10px;color:var(--t3);margin-top:4px}.ki{position:absolute;bottom:8px;right:12px;font-size:28px;opacity:.15}
+    .cg{display:grid;gap:16px;margin-bottom:18px}.c3{grid-template-columns:repeat(3,1fr)}.c21{grid-template-columns:2fr 1fr}
+    @media(max-width:1100px){.c3{grid-template-columns:1fr 1fr}.c21{grid-template-columns:1fr}}
+    @media(max-width:650px){.c3,.c21{grid-template-columns:1fr}}
+    .cc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px}
+    .ct{font-size:12px;font-weight:700;margin-bottom:2px}.cs{font-size:9px;color:var(--t3);margin-bottom:12px}
+    .cw{position:relative;height:220px}.cw.tall{height:280px}
+    .fs{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;margin-bottom:12px}
+    .fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+    .ft{font-size:13px;font-weight:700}
+    .fg{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:8px}
+    @media(max-width:900px){.fg{grid-template-columns:1fr 1fr}}@media(max-width:500px){.fg{grid-template-columns:1fr}}
+    .iw{position:relative}.ii{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+    input,select{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--t1);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:11px;padding:8px 8px 8px 28px;outline:none;transition:border-color .2s,box-shadow .2s}
+    select{cursor:pointer}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+    .btn-rst{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:var(--rs);padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+    .btn-rst:hover{background:rgba(248,113,113,.2)}
+    .ri{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3);margin-bottom:8px}.rc{font-weight:700;color:var(--cyan);font-size:14px}
+    .tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}.ts{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:11px;min-width:900px}
+    thead th{background:#141c2e;padding:9px 11px;text-align:left;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1px solid var(--bdr)}
+    tbody tr{border-bottom:1px solid #1a2338;transition:background .15s;cursor:pointer}tbody tr:hover{background:var(--card2)}tbody tr:last-child{border-bottom:none}
+    td{padding:8px 11px;vertical-align:middle}
+    .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap}
+    .bg{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3)}
+    .bb{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+    .ba{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+    .bro{background:rgba(244,63,94,.15);color:#fb7185;border:1px solid rgba(244,63,94,.3)}
+    .bgr{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}
+    .bv{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+    .pg{display:flex;align-items:center;justify-content:center;gap:4px;padding:12px;flex-wrap:wrap}
+    .pb{background:var(--bg2);border:1px solid var(--bdr);color:var(--t2);border-radius:var(--rs);padding:5px 10px;font-size:11px;cursor:pointer;transition:all .15s;font-family:inherit}
+    .pb:hover,.pb.on{background:var(--blue);border-color:var(--blue);color:#fff}.pi{font-size:10px;color:var(--t3);margin:0 3px}
+    .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center;padding:12px}
+    .mo.open{display:flex;animation:fi .2s}@keyframes fi{from{opacity:0}to{opacity:1}}
+    .mb{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);max-width:680px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:su .25s ease}
+    @keyframes su{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bdr)}
+    .mh h2{font-size:14px;font-weight:700;color:#60a5fa}
+    .mc-btn{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:6px;transition:all .15s}
+    .mc-btn:hover{color:var(--t1);background:rgba(255,255,255,.05)}.mbd{padding:16px 20px}
+    .dg{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:480px){.dg{grid-template-columns:1fr}}
+    .di label{display:block;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+    .di .dv{font-size:12px;color:var(--t1);background:var(--bg2);border-radius:var(--rs);padding:7px 10px;border:1px solid var(--bdr);word-break:break-word;min-height:30px}
+    .di.full{grid-column:span 2}@media(max-width:480px){.di.full{grid-column:span 1}}
+    .img-link{color:#60a5fa;text-decoration:none;font-size:11px;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:var(--rs);transition:all .2s}
+    .img-link:hover{background:rgba(59,130,246,.2)}
+    .stit{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+    .empty{text-align:center;padding:36px;color:var(--t3)}.empty .ic{font-size:36px;margin-bottom:8px;display:block}.empty p{font-size:12px}
+    .lu{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+    ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+    /* Edit form */
+    .mf label{display:block;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .mf input,.mf select,.mf textarea{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--t1);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;resize:vertical}
+    .mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+    .mf textarea{min-height:60px}.mf.full{grid-column:span 2}@media(max-width:480px){.mf.full{grid-column:span 1}}
+    .btn-save{background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:12px;font-weight:700;padding:9px 20px;cursor:pointer;transition:all .2s}
+    .btn-save:hover{opacity:.9}
+    .btn-del{background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.3);color:#fb7185;border-radius:var(--rs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-del:hover{background:rgba(244,63,94,.22)}
+    .btn-cancel{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);color:var(--t2);border-radius:var(--rs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-cancel:hover{background:rgba(100,116,139,.2)}
+    .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--bdr)}
+    .btn-api{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#f59e0b;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-api:hover{background:rgba(245,158,11,.2);border-color:#f59e0b}
+    .btn-api.connected{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:#10b981}
+    .btn-add{background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:12px;font-weight:700;padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-add:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-exp{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#34d399;border-radius:var(--rs);padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-exp:hover{background:rgba(16,185,129,.2)}
+    .local-row{background:rgba(245,158,11,.04)!important}
+    .local-note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--rs);padding:5px 12px;font-size:10px;color:#fbbf24;display:flex;align-items:center;gap:6px}
+    .confirm-del{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#fb7185;margin-top:10px;display:none}
+    /* ── Theme toggle ──────────────────────────────────────────── */
+    .theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--bdr);background:var(--card);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .theme-btn:hover{transform:scale(1.1)}
+    /* ── Dark theme overrides ──────────────────────────────────── */
+    body.dark{--bg:#0a0e1a;--bg2:#111827;--card:#1a2235;--card2:#1e2a3f;--blue:#3b82f6;--cyan:#06b6d4;--violet:#8b5cf6;--green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--bdr:#2d3f5f}
+    body.dark .hdr{background:linear-gradient(135deg,#0f172a,#1e1b4b,#0f172a);border-bottom-color:var(--bdr);box-shadow:none}
+    /* ── Image Gallery ─────────────────────────────────── */
+    .img-gallery{background:var(--card2,#1e2a3f);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;margin-top:4px;grid-column:1/-1}
+    .img-gallery-label{font-size:11px;color:var(--t3);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .img-slides{display:flex;flex-direction:column;gap:8px}
+    .img-slide-wrap{position:relative;background:#000;border-radius:8px;overflow:hidden;min-height:180px;display:flex;align-items:center;justify-content:center}
+    .img-slide-wrap img{width:100%;max-height:320px;object-fit:contain;border-radius:8px;cursor:zoom-in;transition:opacity .2s}
+    .img-slide-wrap .img-err{color:var(--t3);font-size:12px;padding:20px;text-align:center}
+    .img-slide-nav{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+    .img-nav-btn{background:var(--bg2);border:1px solid var(--bdr);color:var(--t2);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;transition:all .2s}
+    .img-nav-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .img-counter{font-size:11px;color:var(--t3)}
+    .img-thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+    .img-thumb{width:52px;height:52px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s;opacity:.6}
+    .img-thumb.active{border-color:var(--blue);opacity:1}
+    .img-thumb-err{width:52px;height:52px;border-radius:6px;background:var(--bg2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+    .img-open-btn{font-size:10px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;border-radius:5px;padding:3px 8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+    .img-open-btn:hover{background:rgba(59,130,246,.25)}
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn .15s}
+    .lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;box-shadow:0 0 60px rgba(0,0,0,.8)}
+    .lightbox-close{position:absolute;top:16px;right:20px;color:#fff;font-size:24px;cursor:pointer;background:rgba(255,255,255,.1);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+    .lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);color:#fff;font-size:28px;cursor:pointer;background:rgba(255,255,255,.12);border:none;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .lightbox-prev{left:16px} .lightbox-next{right:16px}
+    .lightbox-prev:hover,.lightbox-next:hover{background:rgba(59,130,246,.6)}
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-tl">
+      <a href="portal_home.html" class="back-btn">← กลับ</a>
+      <span class="ic">📦</span>
+      <div><h1>Inventory Claim Dashboard</h1><p>Claim Summary — Live จาก Google Sheets · Auto-refresh ทุก 5 นาที</p></div>
+    </div>
+    <div class="hdr-right">
+      <span class="lu" id="lastUpdate">⏳ กำลังโหลด...</span>
+      <span class="bdg" id="totalBadge">📦 --</span>
+      <button class="btn-api" id="apiBtnEl" onclick="openApiModal()" title="ตั้งค่า Google Sheets API">⚙️ API</button>
+      <button class="btn-exp" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn-ref" onclick="loadData()"><span id="spinIc">🔄</span> รีเฟรชข้อมูล</button>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="เปลี่ยนธีม">☀️</button>
+      <button class="btn-add" onclick="openAdd()">＋ เพิ่มเคลม</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tb on" onclick="sw('o')" id="to">📊 ภาพรวม</button>
+    <button class="tb" onclick="sw('d')" id="td">📋 ข้อมูลทั้งหมด</button>
+  </div>
+  <div id="co"><div class="ld-scr"><div class="spinner-lg"></div><p class="ld-txt">กำลังดึงข้อมูลจาก Google Sheets...</p></div></div>
+  <div id="cd" style="display:none">
+    <div class="stit"><span>📋</span>ข้อมูล Claim ทั้งหมด</div>
+    <div class="fs">
+      <div class="fh"><div class="ft">🔍 ค้นหาและกรองข้อมูล</div><button class="btn-rst" onclick="rst()">✕ ล้างตัวกรอง</button></div>
+      <div class="fg">
+        <div class="iw"><span class="ii">🔍</span><input type="text" id="si" placeholder="ค้นหา Claim No., Customer, Brand, Model, Serial..." oninput="af()"/></div>
+        <div class="iw"><span class="ii">📊</span><select id="fst" onchange="af()"><option value="">ทุก Status</option></select></div>
+        <div class="iw"><span class="ii">🏭</span><select id="fbr" onchange="af()"><option value="">ทุก Brand</option></select></div>
+        <div class="iw"><span class="ii">🏢</span><select id="fcb" onchange="af()"><option value="">ทุก Claim By</option></select></div>
+        <div class="iw"><span class="ii">👤</span><select id="fcu" onchange="af()"><option value="">ทุก Customer</option></select></div>
+      </div>
+    </div>
+    <div class="ri"><span class="rc" id="rc">0</span><span>รายการ</span><span id="ro" style="margin-left:8px"></span><span id="localNote" class="local-note" style="display:none;margin-left:auto">✎ มีรายการแก้ไขในเครื่อง</span></div>
+    <div class="tw"><div class="ts">
+      <table><thead><tr><th>#</th><th>Claim No.</th><th>วันที่</th><th>บริษัท / User</th><th>Brand</th><th>Model</th><th>Serial</th><th>อาการ</th><th>Status</th><th>รูป</th><th>จัดการ</th></tr></thead>
+      <tbody id="tb"></tbody></table>
+    </div><div class="pg" id="pg"></div></div>
+  </div>
+</div>
+<!-- API Settings Modal -->
+<div class="mo" id="apiMo" onclick="closeApiModal(event)" style="display:none;opacity:0;pointer-events:none">
+  <div class="mb" style="max-width:480px">
+    <div class="mh"><h2>⚙️ ตั้งค่า Google Sheets API</h2><button class="mc-btn" onclick="closeApiModalDirect()">✕</button></div>
+    <div class="mbd" style="padding:20px">
+      <p style="color:var(--t2);font-size:13px;margin-bottom:16px;line-height:1.6">
+        ใส่ URL ของ <strong>Google Apps Script Web App</strong> เพื่อให้เว็บสามารถ Add/Edit/Delete ข้อมูลใน Google Sheet ได้โดยตรง
+      </p>
+      <div style="background:var(--card2,#1e2a3f);border:1px solid var(--bdr);border-radius:8px;padding:12px;margin-bottom:16px">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:6px">📌 สถานะ API ปัจจุบัน</div>
+        <div id="apiStatusTxt" style="font-size:12px;color:#f1f5f9;word-break:break-all"></div>
+      </div>
+      <label style="font-size:12px;color:var(--t3);display:block;margin-bottom:6px">Apps Script Web App URL</label>
+      <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/..." 
+        style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--bdr);color:var(--t1);border-radius:8px;padding:10px 12px;font-size:12px;font-family:monospace;outline:none"
+        oninput="checkApiInput()">
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button onclick="testApi()" id="testApiBtn" style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);color:#06b6d4;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit">🔍 ทดสอบการเชื่อมต่อ</button>
+        <button onclick="saveApiUrl()" id="saveApiBtn" style="background:var(--blue);border:none;color:#fff;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600">💾 บันทึก URL</button>
+        <button onclick="clearApiUrl()" style="background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);color:#f43f5e;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit">🗑 ล้าง URL</button>
+      </div>
+      <div id="apiTestResult" style="margin-top:12px;font-size:12px;display:none"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--bdr);padding-top:14px">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:8px">📖 วิธีตั้งค่า Apps Script</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.8">
+          1. ไปที่ <a href="https://script.google.com" target="_blank" style="color:#60a5fa">script.google.com</a> → New project<br>
+          2. วางโค้ด claim_sync_api.gs แล้ว Save<br>
+          3. Deploy → New deployment → Web app<br>
+          4. Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong><br>
+          5. Copy URL มาวางด้านบน
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="mo" onclick="cmOuter(event)">
+  <div class="mb" style="max-width:720px">
+    <div class="mh"><h2 id="mt">รายละเอียด</h2><button class="mc-btn" onclick="cm()">✕</button></div>
+    <div class="mbd">
+      <div class="dg" id="mc"></div>
+      <div class="confirm-del" id="confirmDel">⚠️ ยืนยันการลบ "<span id="delClaim"></span>" ? ไม่สามารถกู้คืนได้</div>
+      <div class="modal-actions" id="modalActions">
+        <button class="btn-cancel" onclick="cm()">ยกเลิก</button>
+        <button class="btn-save" onclick="saveRecord()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// ── Google Sheets Config ──────────────────────────────────────────────────
+const SID = '1t7gAAeY1NMA88TvNTmHBgW2P4rIWQflFixosKTVXcuA';
+const GID = '1647538212';
+const CSV = `https://docs.google.com/spreadsheets/d/${SID}/export?format=csv&gid=${GID}`;
+
+// -- Apps Script Web App URL (ใส่หลัง Deploy) --
+let APPS_SCRIPT_URL = localStorage.getItem('claim_api_url') || 'https://script.google.com/macros/s/AKfycbzFtQooETim8BM474_0kuf1XwKwF8M6aRrvO8rxTwGGNIbsC_RCdML5lvHthHfnUroL/exec';
+
+// ── Fallback embedded data (อัปเดตอัตโนมัติเมื่อ fetch สำเร็จ) ─────────────
+const FALLBACK_CSV = ` ID,Claim No.,Date,Customer,Email  Customer,Phone Customer,User,Claim By,Brand,Model,Serial,Date of Claim,Warranty Void,Year of Warranty,ภาพสินค้าที่เคลม,Symptom Informed (Operation),Inspection Result (Operation),Status,Solution
+1,CLI-20260701-001,1/7/26,บริษัท เค.ที.เอส.ซีซีทีวี แอนด์ ไอพี พีเอ ซิสเทมส์ จำกัด,099-1199699,099-1199699,บริษัท เค.ที.เอส.ซีซีทีวี แอนด์ ไอพี พีเอ ซิสเทมส์ จำกัด,Dealer,TVT,TD-9422S4-C,TD-9422S4-C2412240026,1/7/2568,,,https://drive.google.com/open?id=13W9MqgE6z2wZibLryhFqsdAh3sTrm9mX,ไฟไม่เข้า,,รอส่งต่างประเทศ,
+2,CLI-20260713-002,13/7/26,บริษัท เอเบิลลิ้งค์ (ประเทศไทย) จำกัด ,servicecenter@esithailand.com,0648463305,บริษัท เอ็นไวรอนเมนทอล โซลูชั่น อินทิเกรเตอร์ จำกัด,Dealer,TVT,TD-3332H4,S/N : TD-3332H4-B22504110002,25 พฤษภาคม 2566,,,https://drive.google.com/open?id=13gt2LqPs5VfMcQKFsf7eaRQPnHGU_6kx,เครื่อง มีอาการติดๆ ดับๆ ไม่สามารถเซตออนไลน์ได้,ตรวจสอบแล้ว ฮาร์ดดิสลูกค้ามีปัญหา ตัวเครื่องใช้งานได้ปกติ,ดำเนินการเรียบร้อย,แก้ที่ฮาร์ดดิสลูกค้า เข้าไปแก้ใน Soft Ware
+3,CLI-20260723-003,23/7/26,Ablelink (Thailand),info@paisitintertrade.com,0813835154,บริษัท ไพสิฐ อินเตอร์เทรด จำกัด ,Dealer,1.HDMI,GEN-6391A03,รุ่น MD-4KHDF-20,26/08/2025,,,https://drive.google.com/open?id=1vaDUfsUwuqzYX5jgH3Pr2BYGzEyhw7KA,HDMI TO FIBER ยี่ห้อ FOCOMM รุ่น MD-4KHDF-20 ใช้งานไม่ได้เปิดแล้ว 5-10 นาที ดับ,ตรวจสอบแล้้ว พอร์ต POE เสีย ตัวลำโพงยังใช้งานได้ปกติ,กำลังตรวจสอบ,
+4,CLI-20260714-004,14/7/26,บริษัท เอเบิลลิ้งค์ (ประเทศไทย) จำกัด ,chaichana_c@hotmail.com,0821051919,บจก.เอสโฟร์ ซีเคียวริตี้ ซาวด์ ซิสเต็ม เซอร์วิส,Dealer,Spon,,SN TLA100062412210006,1/6/1968,,,-,ไม่ดัง เสียบสายแลนด์ แล้วไม่มีสัญญาณ ทดลองทั้ง 2 ช่อง,,,
+`;
+
+let AD = [], FD = [], CP = 1;
+const PS = 25;
+let CH = {};
+let editId = null;
+const CC = ['#3b82f6','#10b981','#f59e0b','#f43f5e','#8b5cf6','#06b6d4','#84cc16','#f97316','#ec4899','#14b8a6','#6366f1','#a78bfa'];
+const LS_KEY = 'claim_local_v1';
+let localData = JSON.parse(localStorage.getItem(LS_KEY) || '{"adds":[],"edits":{},"deletes":[]}');
+
+const STATUS_OPTS = [
+  'รอรับสินค้า',
+  'กำลังตรวจสอบ',
+  'ตรวจสอบแล้ว',
+  'Out Of Waranty',
+  'รอส่งต่างประเทศ',
+  'ส่งไปต่างประเทศ',
+  'รอรับสินค้ากลับจากต่างประเทศ',
+  'รับสินค้ากลับจากต่างประเทศแล้ว',
+  'รอประกอบสินค้า',
+  'รอส่งสินค้าคืน',
+  'ดำเนินการเรียบร้อย',
+  'ไม่มีสินค้าเคลมส่งเข้ามา',
+  'ส่งสินค้าทดแทนระหว่างเคลม'
+];
+const CLAIMBY_OPTS = ['Dealer','End User'];
+
+// ── CSV Parser ────────────────────────────────────────────────────────────
+function pRow(ln) {
+  const r = []; let c = '', q = false;
+  for (let i = 0; i < ln.length; i++) {
+    const ch = ln[i];
+    if (ch === '"') { if (q && ln[i+1] === '"') { c += '"'; i++; } else q = !q; }
+    else if (ch === ',' && !q) { r.push(c); c = ''; }
+    else c += ch;
+  }
+  r.push(c); return r;
+}
+function pCSV(txt) {
+  const ls = txt.trim().split('\n');
+  if (ls.length < 2) return [];
+  const hs = pRow(ls[0]);
+  const rows = [];
+  for (let i = 1; i < ls.length; i++) {
+    const vs = pRow(ls[i]);
+    if (vs.every(v => v.trim() === '')) continue;
+    const o = {}; hs.forEach((h, idx) => { o[h.trim()] = (vs[idx] || '').trim(); });
+    if (o['Claim No.'] && o['Claim No.'].trim() !== '') {
+      o._id = i + '_' + (o['Claim No.'] || '').replace(/\s/g,'');
+      o._src = 'sheet';
+      rows.push(o);
+    }
+  }
+  return rows;
+}
+
+// ── Load Data ─────────────────────────────────────────────────────────────
+async function loadData() {
+  const sp = document.getElementById('spinIc');
+  if (sp) sp.className = 'spin-anim';
+  try {
+    let txt = '';
+    let usedFallback = false;
+
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(id);
+        return response;
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    // 1. Direct fetch Google Sheet CSV (Instant & Most reliable)
+    try {
+      const r = await fetchWithTimeout(CSV + '&nocache=' + Date.now(), { cache: 'no-store' }, 4000);
+      if (r.ok) {
+        const t = await r.text();
+        if (t && (t.includes('Claim No.') || t.includes('Customer') || t.includes(',')) && !t.startsWith('{')) {
+          txt = t;
+        }
+      }
+    } catch (e) {
+      console.warn('Direct fetch failed, trying proxy...', e);
+    }
+
+    // 2. Proxy fallback if direct fetch failed
+    if (!txt) {
+      const proxies = [
+        'https://api.allorigins.win/get?url=' + encodeURIComponent(CSV + '&nocache=' + Date.now()),
+        'https://corsproxy.io/?' + encodeURIComponent(CSV + '&nocache=' + Date.now())
+      ];
+      for (const pUrl of proxies) {
+        try {
+          const res = await fetchWithTimeout(pUrl, { cache: 'no-store' }, 4000);
+          if (res.ok) {
+            const raw = await res.text();
+            let parsedTxt = raw;
+            try {
+              const j = JSON.parse(raw);
+              if (j.contents) parsedTxt = j.contents;
+            } catch {}
+            if (parsedTxt && (parsedTxt.includes('Claim No.') || parsedTxt.includes('Customer') || parsedTxt.includes(',')) && !parsedTxt.startsWith('{"success":false')) {
+              txt = parsedTxt;
+              break;
+            }
+          }
+        } catch {}
+      }
+    }
+
+    let sheetData = txt ? pCSV(txt) : [];
+    if (!sheetData.length) {
+      txt = FALLBACK_CSV;
+      sheetData = pCSV(txt);
+      usedFallback = true;
+    }
+
+    window._sheetData = sheetData;
+    AD = sheetData
+      .filter(r => !new Set(localData.deletes || []).has(r._id))
+      .map(r => (localData.edits || {})[r._id] ? { ...(localData.edits || {})[r._id], _id: r._id, _src: 'edited' } : r);
+    (localData.adds || []).forEach(a => AD.push({ ...a, _src: 'local' }));
+    if (!AD.length) throw new Error('ไม่พบข้อมูล');
+
+    const now = new Date().toLocaleString('th-TH', { hour12: false });
+    if (usedFallback) {
+      document.getElementById('lastUpdate').innerHTML = '⚠️ ข้อมูล Offline (กด รีเฟรช เพื่ออัปเดต)';
+      document.getElementById('totalBadge').textContent = '📦 ' + AD.length + ' รายการ (cached)';
+    } else {
+      document.getElementById('lastUpdate').innerHTML = '<span class="live-dot"></span>Live: ' + now;
+      document.getElementById('totalBadge').textContent = '📦 ' + AD.length + ' รายการ';
+    }
+    renderOv(); bFO(); FD = [...AD]; rt();
+    const hasLocal = (localData.adds||[]).length + Object.keys(localData.edits||{}).length + (localData.deletes||[]).length;
+    document.getElementById('localNote').style.display = hasLocal ? 'flex' : 'none';
+  } catch (e) {
+    try {
+      AD = pCSV(FALLBACK_CSV);
+      document.getElementById('lastUpdate').innerHTML = '⚠️ ข้อมูล Offline';
+      document.getElementById('totalBadge').textContent = '📦 ' + AD.length + ' รายการ (cached)';
+      renderOv(); bFO(); FD = [...AD]; rt();
+    } catch {
+      document.getElementById('co').innerHTML =
+        '<div class="err-box"><p>⚠️ ' + e.message + '</p></div>' +
+        '<div class="setup-box"><strong style="color:var(--t1)">📋 วิธีตั้งค่า Google Sheet:</strong><br/><br/>' +
+        '1. เปิด Google Sheet → คลิก <strong style="color:#60a5fa">Share</strong><br/>' +
+        '2. เปลี่ยนเป็น <strong style="color:#60a5fa">Anyone with the link → Viewer</strong><br/>' +
+        '3. บันทึก → กลับมากด <strong style="color:#06b6d4">รีเฟรชข้อมูล</strong></div>';
+      document.getElementById('lastUpdate').textContent = '❌ โหลดไม่สำเร็จ';
+    }
+  } finally {
+    if (sp) sp.className = '';
+  }
+}
+
+// ── Status Badge ──────────────────────────────────────────────────────────
+function sb(st) {
+  if (!st) return '<span class="badge bgr">-</span>';
+  const s = st.trim();
+  // ✅ เสร็จแล้ว
+  if (s === 'ดำเนินการเรียบร้อย') return '<span class="badge bg">✓ ' + s + '</span>';
+  // ⚠ Out of Warranty
+  if (s.toLowerCase().includes('waranty') || s.toLowerCase().includes('warranty')) return '<span class="badge bro">⚠ ' + s + '</span>';
+  // 🔍 กำลัง/ตรวจสอบ
+  if (s === 'กำลังตรวจสอบ') return '<span class="badge bv">🔍 ' + s + '</span>';
+  if (s === 'ตรวจสอบแล้ว') return '<span class="badge" style="background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.3)">✔ ' + s + '</span>';
+  // ✈ ต่างประเทศ
+  if (s === 'ส่งไปต่างประเทศ') return '<span class="badge bb">✈ ' + s + '</span>';
+  if (s === 'รอส่งต่างประเทศ') return '<span class="badge ba">⏳ ' + s + '</span>';
+  if (s === 'รอรับสินค้ากลับจากต่างประเทศ') return '<span class="badge ba">⏳ ' + s + '</span>';
+  if (s === 'รับสินค้ากลับจากต่างประเทศแล้ว') return '<span class="badge" style="background:rgba(6,182,212,.15);color:#22d3ee;border:1px solid rgba(6,182,212,.3)">📦 ' + s + '</span>';
+  // ⏳ รอ...
+  if (s === 'รอรับสินค้า' || s === 'รอประกอบสินค้า' || s === 'รอส่งสินค้าคืน') return '<span class="badge ba">⏳ ' + s + '</span>';
+  // 🔄 ทดแทน
+  if (s === 'ส่งสินค้าทดแทนระหว่างเคลม') return '<span class="badge" style="background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)">🔄 ' + s + '</span>';
+  // ✖ ไม่มี
+  if (s === 'ไม่มีสินค้าเคลมส่งเข้ามา') return '<span class="badge bgr">✖ ' + s + '</span>';
+  return '<span class="badge bgr">' + s + '</span>';
+}
+
+function cBy(arr, k) {
+  const m = {};
+  const labelMap = {}; // store display label (first occurrence)
+  arr.forEach(d => {
+    const raw = (d[k] || 'ไม่ระบุ').trim();
+    const key = raw.toUpperCase(); // normalize for grouping
+    if (!labelMap[key]) labelMap[key] = raw; // keep first-seen label
+    m[key] = (m[key] || 0) + 1;
+  });
+  return Object.entries(m)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => [labelMap[k], v]); // restore display label
+}
+
+// ── Render Overview ───────────────────────────────────────────────────────
+function renderOv() {
+  const t  = AD.length;
+  const dn = AD.filter(d => (d.Status || '').includes('เรียบร้อย')).length;
+  const chk= AD.filter(d => (d.Status || '').includes('ตรวจสอบ') || (d.Status || '').includes('กำลัง')).length;
+  const ow = AD.filter(d => (d.Status || '').toLowerCase().includes('waranty') || (d.Status || '').includes('หมดประกัน')).length;
+  const br = new Set(AD.map(d => d.Brand).filter(Boolean)).size;
+  document.getElementById('co').innerHTML =
+    '<div class="kg">' +
+    '<div class="kc b"><div class="kl">Claim ทั้งหมด</div><div class="kv">' + t + '</div><div class="ks">จาก Google Sheets</div><div class="ki">📦</div></div>' +
+    '<div class="kc g"><div class="kl">ดำเนินการแล้ว</div><div class="kv">' + dn + '</div><div class="ks">' + (t ? ((dn/t)*100).toFixed(1) : 0) + '%</div><div class="ki">✅</div></div>' +
+    '<div class="kc v"><div class="kl">กำลังตรวจสอบ</div><div class="kv">' + chk + '</div><div class="ks">รอผลการตรวจ</div><div class="ki">🔍</div></div>' +
+    '<div class="kc r"><div class="kl">Out of Warranty</div><div class="kv">' + ow + '</div><div class="ks">เกินอายุประกัน</div><div class="ki">⚠️</div></div>' +
+    '<div class="kc a"><div class="kl">จำนวน Brand</div><div class="kv">' + br + '</div><div class="ks">ยี่ห้อสินค้า</div><div class="ki">🏭</div></div></div>' +
+    '<div class="cg c3">' +
+    '<div class="cc"><div class="ct">สถานะ Claim</div><div class="cs">Status ทั้งหมด</div><div class="cw"><canvas id="cS"></canvas></div></div>' +
+    '<div class="cc"><div class="ct">Brand ที่ Claim มากสุด</div><div class="cs">จำนวนแยกตาม Brand</div><div class="cw"><canvas id="cB"></canvas></div></div>' +
+    '<div class="cc"><div class="ct">Top Model</div><div class="cs">รุ่นที่ Claim มากที่สุด</div><div class="cw"><canvas id="cM"></canvas></div></div></div>' +
+    '<div class="cg c21">' +
+    '<div class="cc"><div class="ct">เคลมรายเดือน</div><div class="cs">จำนวน Claim แต่ละเดือน</div><div class="cw tall"><canvas id="cCB"></canvas></div></div>' +
+    '<div class="cc"><div class="ct">Top Customer</div><div class="cs">ลูกค้าที่ Claim มากสุด</div><div class="cw tall"><canvas id="cCU"></canvas></div></div></div>';
+
+  Object.values(CH).forEach(c => { try { c.destroy(); } catch {} }); CH = {};
+  const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+    scales: { x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,.04)' } },
+              y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } } } };
+
+  const sd = cBy(AD, 'Status').slice(0, 8);
+  CH.s = new Chart(document.getElementById('cS'), { type: 'doughnut', data: { labels: sd.map(x => x[0]), datasets: [{ data: sd.map(x => x[1]), backgroundColor: CC, borderColor: '#1a2235', borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 9 }, boxWidth: 10, padding: 6 } } } } });
+  const bd = cBy(AD, 'Brand').slice(0, 10);
+  CH.b = new Chart(document.getElementById('cB'), { type: 'bar', data: { labels: bd.map(x => x[0]), datasets: [{ data: bd.map(x => x[1]), backgroundColor: CC, borderRadius: 5 }] }, options: { ...opt, indexAxis: 'y' } });
+  const md = cBy(AD, 'Model').slice(0, 10);
+  CH.m = new Chart(document.getElementById('cM'), { type: 'bar', data: { labels: md.map(x => x[0]), datasets: [{ data: md.map(x => x[1]), backgroundColor: CC.map(c => c + 'bb'), borderRadius: 5 }] }, options: { ...opt, indexAxis: 'y' } });
+  const monthly = {};
+  AD.forEach(d => {
+    const raw = (d['Date'] || '').trim();
+    if (!raw) return;
+    const parts = raw.split('/');
+    if (parts.length < 3) return;
+    let mo = parseInt(parts[1]);
+    let yr = parseInt(parts[2]);
+    if (yr < 100) yr = (yr + 2500) - 543; else if (yr > 2400) yr -= 543;
+    if (!mo || !yr || isNaN(mo) || isNaN(yr)) return;
+    const key = yr + '-' + String(mo).padStart(2,'0');
+    monthly[key] = (monthly[key] || 0) + 1;
+  });
+  const mKeys = Object.keys(monthly).sort();
+  const thM = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const mLabels = mKeys.map(k => { const [yr,mo] = k.split('-'); return thM[parseInt(mo)] + "'" + (parseInt(yr)+543).toString().substring(2); });
+  const mVals = mKeys.map(k => monthly[k]);
+  const optLine = { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { title: t => t[0].label, label: t => t.raw + ' รายการ' } } },
+    scales: {
+      x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 45, minRotation: 30 }, grid: { color: 'rgba(255,255,255,.03)' } },
+      y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false }, beginAtZero: true }
+    }
+  };
+  CH.cb = new Chart(document.getElementById('cCB'), {
+    type: 'bar',
+    data: { labels: mLabels, datasets: [{ data: mVals, backgroundColor: mVals.map((v, i) => i === mVals.length - 1 ? '#f59e0b' : 'rgba(59,130,246,.75)'), borderRadius: 5, borderSkipped: false }] },
+    options: optLine
+  });
+  const cud = cBy(AD, 'User').slice(0, 10);
+  CH.cu = new Chart(document.getElementById('cCU'), { type: 'bar', data: { labels: cud.map(x => x[0].length > 22 ? x[0].substring(0, 22) + '…' : x[0]), datasets: [{ data: cud.map(x => x[1]), backgroundColor: '#06b6d4', borderRadius: 5 }] }, options: { ...opt, indexAxis: 'y' } });
+}
+
+// ── Filter Options ────────────────────────────────────────────────────────
+function bFO() {
+  const fill = (id, key) => {
+    const sel = document.getElementById(id), f = sel.options[0];
+    sel.innerHTML = ''; sel.appendChild(f);
+    [...new Set(AD.map(d => d[key]).filter(Boolean))].sort().forEach(v => {
+      const o = document.createElement('option'); o.value = v; o.textContent = v.length > 40 ? v.substring(0, 40) + '…' : v; sel.appendChild(o);
+    });
+  };
+  fill('fst', 'Status'); fill('fbr', 'Brand'); fill('fcb', 'Claim By'); fill('fcu', 'User');
+}
+
+// ── Filter & Table ────────────────────────────────────────────────────────
+function af() {
+  const s = document.getElementById('si').value.toLowerCase();
+  const st = document.getElementById('fst').value, br = document.getElementById('fbr').value;
+  const cb2 = document.getElementById('fcb').value, cu = document.getElementById('fcu').value;
+  FD = AD.filter(d => {
+    if (s) { const h = [d['Claim No.'], d.User, d.Customer, d.Brand, d.Model, d.Serial, d['Symptom Informed (Operation)'], d.Status].join(' ').toLowerCase(); if (!h.includes(s)) return false; }
+    if (st && d.Status !== st) return false;
+    if (br && d.Brand !== br) return false;
+    if (cb2 && d['Claim By'] !== cb2) return false;
+    if (cu && d.User !== cu) return false;
+    return true;
+  }); CP = 1; rt();
+}
+function rst() { document.getElementById('si').value = ''; ['fst','fbr','fcb','fcu'].forEach(id => document.getElementById(id).value = ''); af(); }
+
+function rt() {
+  const tot = FD.length;
+  document.getElementById('rc').textContent = tot.toLocaleString();
+  document.getElementById('ro').textContent = 'จากทั้งหมด ' + AD.length + ' รายการ';
+  const st = (CP - 1) * PS, pg2 = FD.slice(st, st + PS), tb = document.getElementById('tb');
+  if (!pg2.length) { tb.innerHTML = '<tr><td colspan="11"><div class="empty"><span class="ic">🔍</span><p>ไม่พบข้อมูล</p></div></td></tr>'; document.getElementById('pg').innerHTML = ''; return; }
+  tb.innerHTML = pg2.map((d, i) => {
+    const globalIdx = FD.findIndex(r => r._id === d._id) + 1; // ลำดับจริงใน FD
+
+    const hi = d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21'] && d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21'].includes('http');
+    const imgUrls = hi ? parseImgUrls(d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21']) : [];
+    const imgCount = imgUrls.length;
+    const rawImgVal = hi ? encodeURIComponent(d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21']) : '';
+    const isLocal = d._src === 'local' || d._src === 'edited';
+    return `<tr class="${isLocal?'local-row':''}" onclick="openEdit('${d._id}')">
+      <td style="color:var(--t3);font-size:10px">${globalIdx}</td>
+      <td><strong style="color:#60a5fa;font-size:10px">${d['Claim No.']||'-'}</strong></td>
+      <td style="color:#64748b;font-size:10px;white-space:nowrap">${d.Date||'-'}</td>
+      <td style="font-size:10px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${d.User||d.Customer||''}">${d.User||d.Customer||'-'}</td>
+      <td><span style="background:rgba(59,130,246,.1);color:#60a5fa;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700">${d.Brand||'-'}</span></td>
+      <td style="font-size:10px">${d.Model||'-'}</td>
+      <td style="color:#64748b;font-size:9px;font-family:monospace">${(d.Serial||'-').substring(0,16)}</td>
+      <td style="font-size:10px;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${d['Symptom Informed (Operation)']||''}">${d['Symptom Informed (Operation)']||'-'}</td>
+      <td>${sb(d.Status)}</td>
+      <td>${hi ? `<span class="img-link" onclick="event.stopPropagation();openPhotoGallery('${rawImgVal}')" style="cursor:pointer;color:#60a5fa;font-size:11px;white-space:nowrap">🖼 ${imgCount} รูป</span>` : '<span style="color:var(--t3)">-</span>'}</td>
+      <td onclick="event.stopPropagation()">
+        <button style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:inherit" onclick="openEdit('${d._id}')">&#9998; แก้ไข</button>
+      </td>
+    </tr>`;
+  }).join(''); rpg(tot);
+}
+
+function rpg(tot) {
+  const pages = Math.ceil(tot / PS), el = document.getElementById('pg');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+  let h = '';
+  if (CP > 1) h += '<button class="pb" onclick="gp(' + (CP - 1) + ')">‹</button>';
+  const s = Math.max(1, CP - 2), e = Math.min(pages, CP + 2);
+  if (s > 1) h += '<button class="pb" onclick="gp(1)">1</button>' + (s > 2 ? '<span class="pi">…</span>' : '');
+  for (let p = s; p <= e; p++) h += '<button class="pb' + (p === CP ? ' on' : '') + '" onclick="gp(' + p + ')">' + p + '</button>';
+  if (e < pages) h += (e < pages - 1 ? '<span class="pi">…</span>' : '') + '<button class="pb" onclick="gp(' + pages + ')">' + pages + '</button>';
+  if (CP < pages) h += '<button class="pb" onclick="gp(' + (CP + 1) + ')">›</button>';
+  h += '<span class="pi">หน้า ' + CP + '/' + pages + '</span>'; el.innerHTML = h;
+}
+function gp(p) { CP = p; rt(); document.querySelector('.tw').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+
+// ── Generate Claim No ──────────────────────────────────────────────────────
+function genClaimNo() {
+  const now = new Date();
+  const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+  const prefix = `CLI-${y}${m}${d}-`;
+  const same = AD.filter(r => (r['Claim No.']||'').startsWith(prefix)).length;
+  return prefix + String(same+1).padStart(3,'0');
+}
+
+// ── Form helpers ───────────────────────────────────────────────────────────
+function fld(label, name, val, cls='') {
+  return `<div class="mf ${cls}"><label>${label}</label><input name="${name}" value="${(val||'').replace(/"/g,'&quot;').replace(/\n/g,' ')}" placeholder="${label}..."/></div>`;
+}
+function fta(label, name, val, cls='full') {
+  return `<div class="mf ${cls}"><label>${label}</label><textarea name="${name}">${val||''}</textarea></div>`;
+}
+function fsl(label, name, val, opts, cls='') {
+  return `<div class="mf ${cls}"><label>${label}</label><select name="${name}"><option value="">— เลือก —</option>${opts.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o}</option>`).join('')}</select></div>`;
+}
+function buildForm(d) {
+  return fld('Claim No.','Claim No.',d['Claim No.']) +
+    fld('วันที่ (DD/MM/YY)','Date',d.Date) +
+    fld('User / บริษัท','User',d.User,'full') +
+    fld('Customer / Dealer','Customer',d.Customer,'full') +
+    fld('Email','Email  Customer',d['Email  Customer']) +
+    fld('โทรศัพท์','Phone Customer',d['Phone Customer']) +
+    fsl('Claim By','Claim By',d['Claim By'],['Dealer','End User']) +
+    fld('Brand','Brand',d.Brand) +
+    fld('Model','Model',d.Model) +
+    fld('Serial No.','Serial',d.Serial,'full') +
+    fld('วันที่ซื้อ (Date of Claim)','Date of Claim',d['Date of Claim']) +
+    fld('วันหมดประกัน (Warranty Void)','Warranty Void',d['Warranty Void']) +
+    fsl('สถานะ (Status)','Status',d.Status,STATUS_OPTS,'full') +
+    fta('อาการที่แจ้ง (Symptom)','Symptom Informed (Operation)',d['Symptom Informed (Operation)']) +
+    fta('ผลการตรวจสอบ (Inspection Result)','Inspection Result (Operation)',d['Inspection Result (Operation)']) +
+    fta('Solution / วิธีแก้ไข','Solution',d.Solution) +
+    `<div class="mf full"><label>🖼 ลิ้งก์รูปสินค้า <span style="font-weight:400;color:var(--t3)">(Google Drive URL — หลายรูปคั่นด้วย , หรือขึ้นบรรทัดใหม่)</span></label><textarea name="ภาพสินค้าที่เคลม" rows="3" style="font-size:11px;font-family:monospace" placeholder="https://drive.google.com/...&#10;https://drive.google.com/...">${d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21']||''}</textarea></div>`;
+}
+
+// ── Open Add ───────────────────────────────────────────────────────────────
+function openAdd() {
+  editId = null;
+  document.getElementById('mt').textContent = '+ เพิ่ม Claim ใหม่';
+  document.getElementById('confirmDel').style.display = 'none';
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-cancel" onclick="cm()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveRecord()">💾 บันทึก</button>`;
+  document.getElementById('mc').innerHTML = buildForm({ 'Claim No.': genClaimNo() });
+  document.getElementById('mc').style.display = 'grid';
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+}
+
+// ── Open Edit ──────────────────────────────────────────────────────────────
+function openEdit(id) {
+  const d = AD.find(r => r._id === id); if (!d) return;
+  editId = id;
+  document.getElementById('mt').textContent = '✎ ' + (d['Claim No.'] || 'แก้ไข Claim');
+  document.getElementById('confirmDel').style.display = 'none';
+  const escapedId = id.replace(/'/g, "\\'");
+  const escapedClaim = (d['Claim No.']||'').replace(/'/g, "\\'");
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-del" onclick="confirmDelete('${escapedId}','${escapedClaim}')">🗑 ลบ</button>
+    <div style="flex:1"></div>
+    <button class="btn-cancel" onclick="cm()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveRecord()">💾 บันทึก</button>`;
+  document.getElementById('mc').innerHTML = buildForm(d);
+  // Render image gallery after form
+  const imgField = d['\u0e20\u0e32\u0e1e\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e17\u0e35\u0e48\u0e40\u0e04\u0e25\u0e21'];
+  if (imgField && imgField.includes('http')) {
+    const galleryEl = document.createElement('div');
+    galleryEl.className = 'img-gallery';
+    galleryEl.innerHTML = renderImageGallery(parseImgUrls(imgField));
+    document.getElementById('mc').appendChild(galleryEl);
+  }
+  document.getElementById('mc').style.display = 'grid';
+  document.getElementById('mo').classList.add('open'); document.body.style.overflow = 'hidden';
+}
+
+// ── Get Form Data ──────────────────────────────────────────────────────────
+function getFormData() {
+  const f = {};
+  document.querySelectorAll('#mc [name]').forEach(el => { f[el.name] = el.value.trim(); });
+  return f;
+}
+
+// ── Sheet Sync helpers ────────────────────────────────────────────────────
+async function syncToSheet(payload) {
+  const url = APPS_SCRIPT_URL;
+  if (!url) return { ok: false, error: 'no_url' };
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) });
+    return await res.json();
+  } catch(e) { return { ok: false, error: e.message }; }
+}
+function showToast(msg, type) {
+  const color = type==='ok' ? '#10b981' : type==='warn' ? '#f59e0b' : '#f43f5e';
+  const icon  = type==='ok' ? '✅' : type==='warn' ? '⚠️' : '❌';
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9998;background:#1e2a3f;border:1px solid '+color+';color:#f1f5f9;padding:12px 18px;border-radius:10px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:320px;animation:fadeIn .2s';
+  el.innerHTML = icon + ' ' + msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .4s'; setTimeout(()=>el.remove(),400); }, 3000);
+}
+
+// ── Save ───────────────────────────────────────────────────────────────────
+async function saveRecord() {
+  const data = getFormData();
+  if (!data['Claim No.']) { alert('กรุณากรอก Claim No.'); return; }
+  const wasEdit = editId; // capture before cm() closes modal
+
+  if (wasEdit) {
+    const orig = AD.find(r => r._id === wasEdit);
+    if (orig && orig._src === 'local') {
+      const idx = (localData.adds||[]).findIndex(a => a._id === wasEdit);
+      if (idx >= 0) localData.adds[idx] = { ...localData.adds[idx], ...data };
+    } else {
+      if (!localData.edits) localData.edits = {};
+      localData.edits[wasEdit] = { ...data, _id: wasEdit, _src: 'edited' };
+    }
+  } else {
+    const id = '_local_' + Date.now();
+    if (!localData.adds) localData.adds = [];
+    localData.adds.push({ ...data, _id: id, _src: 'local', ID: '' });
+  }
+  saveLocal(); cm(); applyLocalAndRender();
+  if (!APPS_SCRIPT_URL) { showToast('⚠️ ยังไม่ได้ตั้ง API URL — บันทึกเฉพาะในเครื่อง', 'warn'); return; }
+  showToast('กำลัง Sync ไป Sheet...', 'warn');
+  const payload = wasEdit ? { action: 'edit', record: data } : { action: 'add', record: data };
+  console.log('[Claim Sync]', payload.action, data['Claim No.'], data['Status']);
+  const result = await syncToSheet(payload);
+  console.log('[Claim Sync] result', result);
+  if (result.ok) {
+    showToast('✅ ' + (wasEdit ? 'แก้ไข' : 'เพิ่ม') + 'ใน Google Sheet เรียบร้อย!', 'ok');
+    if (wasEdit && localData.edits) delete localData.edits[wasEdit];
+    else if (localData.adds) localData.adds = localData.adds.filter(a => a['Claim No.'] !== data['Claim No.']);
+    saveLocal(); applyLocalAndRender();
+  } else {
+    showToast('❌ Sync ล้มเหลว: ' + (result.error || JSON.stringify(result)), 'err');
+  }
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────────
+function confirmDelete(id, claimNo) {
+  document.getElementById('delClaim').textContent = claimNo;
+  document.getElementById('confirmDel').style.display = 'block';
+  const escapedId = id.replace(/'/g, "\\'");
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-cancel" onclick="document.getElementById('confirmDel').style.display='none'">ยกเลิก</button>
+    <button class="btn-del" onclick="deleteRecord('${escapedId}')">🗑 ยืนยันลบ</button>`;
+}
+async function deleteRecord(id) {
+  const rec = AD.find(r => r._id === id);
+  const claimNo = rec ? rec['Claim No.'] : null;
+  if (rec && rec._src === 'local') {
+    localData.adds = (localData.adds||[]).filter(a => a._id !== id);
+  } else {
+    if (!localData.deletes) localData.deletes = [];
+    if (!localData.deletes.includes(id)) localData.deletes.push(id);
+    if (localData.edits) delete localData.edits[id];
+  }
+  localStorage.setItem(LS_KEY, JSON.stringify(localData)); cm(); applyLocalAndRender();
+  if (!APPS_SCRIPT_URL || !claimNo || (rec && rec._src === 'local')) return;
+  showToast('กำลังลบใน Sheet...', 'warn');
+  const result = await syncToSheet({ action: 'delete', claimNo });
+  if (result.ok) {
+    showToast('✅ ลบออกจาก Google Sheet เรียบร้อย!', 'ok');
+    localData.deletes = (localData.deletes||[]).filter(d => d !== id);
+    saveLocal();
+  } else {
+    showToast('❌ ลบใน Sheet ไม่สำเร็จ: ' + (result.error||''), 'err');
+  }
+}
+function saveLocal() { localStorage.setItem(LS_KEY, JSON.stringify(localData)); }
+
+// ── Fast local refresh (no network) ─────────────────────────────────────
+function applyLocalAndRender() {
+  // Re-apply local changes on top of last fetched sheet data (stored in window._sheetData)
+  const base = window._sheetData || [];
+  AD = base
+    .filter(r => !new Set(localData.deletes || []).has(r._id))
+    .map(r => (localData.edits || {})[r._id] ? { ...(localData.edits || {})[r._id], _id: r._id, _src: 'edited' } : r);
+  (localData.adds || []).forEach(a => AD.push({ ...a, _src: 'local' }));
+  document.getElementById('totalBadge').textContent = '📦 ' + AD.length + ' รายการ';
+  renderOv(); bFO(); FD = [...AD]; rt();
+  const hasLocal = (localData.adds||[]).length + Object.keys(localData.edits||{}).length + (localData.deletes||[]).length;
+  document.getElementById('localNote').style.display = hasLocal ? 'flex' : 'none';
+}
+
+// ── Export CSV ─────────────────────────────────────────────────────────────
+
+// ── Image Gallery Helpers ─────────────────────────────────────────────────
+function parseImgUrls(raw) {
+  if (!raw) return [];
+  return raw.split(/[\n,]+/).map(u => u.trim()).filter(u => u.startsWith('http'));
+}
+function driveDirectUrl(url) {
+  const m = url.match(/(?:\/d\/|id=|open\?id=)([a-zA-Z0-9_-]{25,})/);
+  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800';
+  return url;
+}
+function driveOpenUrl(url) {
+  const m = url.match(/(?:\/d\/|id=|open\?id=)([a-zA-Z0-9_-]{25,})/);
+  if (m) return 'https://drive.google.com/file/d/' + m[1] + '/view';
+  return url;
+}
+let _galleryUrls = [], _galleryIdx = 0;
+function renderImageGallery(urls) {
+  if (!urls.length) return '';
+  _galleryUrls = urls; _galleryIdx = 0;
+  const thumbs = urls.map((u, i) =>
+    '<img class="img-thumb ' + (i===0?'active':'') + '" src="' + driveDirectUrl(u) + '" id="gthumb_' + i + '"' +
+    ' onclick="galGoTo(' + i + ')" onerror="this.style.display=\'none\'">'
+  ).join('');
+  return '<div class="img-gallery-label">' +
+    '<span>&#x1F5BC; ' + (urls.length > 1 ? urls.length + ' รูป' : '1 รูป') + '</span>' +
+    '<a href="' + driveOpenUrl(urls[0]) + '" target="_blank" class="img-open-btn" id="galOpenBtn">&#x2197; เปิดใน Drive</a>' +
+    '</div>' +
+    '<div class="img-slides">' +
+      '<div class="img-slide-wrap">' +
+        '<img id="galMain" src="' + driveDirectUrl(urls[0]) + '" onclick="openLightbox(0)">' +
+      '</div>' +
+      (urls.length > 1 ? '<div class="img-slide-nav"><button class="img-nav-btn" onclick="galPrev()">&#8249; ก่อนหน้า</button><span class="img-counter" id="galCounter">1 / ' + urls.length + '</span><button class="img-nav-btn" onclick="galNext()">ถัดไป &#8250;</button></div>' : '') +
+    '</div>' +
+    (urls.length > 1 ? '<div class="img-thumbs">' + thumbs + '</div>' : '');
+}
+function galGoTo(idx) {
+  _galleryIdx = Math.max(0, Math.min(idx, _galleryUrls.length - 1));
+  const url = _galleryUrls[_galleryIdx];
+  const main = document.getElementById('galMain');
+  if (main) { main.src = driveDirectUrl(url); main.onclick = function(){ openLightbox(_galleryIdx); }; }
+  const counter = document.getElementById('galCounter');
+  if (counter) counter.textContent = (_galleryIdx + 1) + ' / ' + _galleryUrls.length;
+  const btn = document.getElementById('galOpenBtn');
+  if (btn) btn.href = driveOpenUrl(url);
+  document.querySelectorAll('.img-thumb').forEach(function(t, i){ t.classList.toggle('active', i === _galleryIdx); });
+}
+function galPrev() { galGoTo(_galleryIdx - 1); }
+function galNext() { galGoTo(_galleryIdx + 1); }
+function openPhotoGallery(encodedVal) {
+  const raw = decodeURIComponent(encodedVal);
+  const urls = parseImgUrls(raw);
+  if (!urls.length) return;
+  openLightbox(0, urls);
+}
+let _lbUrls = [], _lbIdx = 0;
+function openLightbox(idx, urls) {
+  _lbUrls = urls || _galleryUrls;
+  _lbIdx = idx;
+  var existing = document.getElementById('_lightbox');
+  if (existing) existing.remove();
+  var lb = document.createElement('div');
+  lb.className = 'lightbox'; lb.id = '_lightbox';
+  lb.innerHTML =
+    '<button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>' +
+    (_lbUrls.length > 1 ? '<button class="lightbox-prev" onclick="lbPrev(event)">&#8249;</button>' : '') +
+    '<img id="_lbImg" src="' + driveDirectUrl(_lbUrls[_lbIdx]) + '" onclick="event.stopPropagation()">' +
+    (_lbUrls.length > 1 ? '<button class="lightbox-next" onclick="lbNext(event)">&#8250;</button>' : '');
+  lb.onclick = closeLightbox;
+  document.body.appendChild(lb);
+}
+function closeLightbox() { var el = document.getElementById('_lightbox'); if (el) el.remove(); }
+function lbGoTo(idx) {
+  _lbIdx = Math.max(0, Math.min(idx, _lbUrls.length - 1));
+  var img = document.getElementById('_lbImg');
+  if (img) img.src = driveDirectUrl(_lbUrls[_lbIdx]);
+}
+function lbPrev(e) { e.stopPropagation(); lbGoTo(_lbIdx - 1); }
+function lbNext(e) { e.stopPropagation(); lbGoTo(_lbIdx + 1); }
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('_lightbox')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbGoTo(_lbIdx - 1);
+  if (e.key === 'ArrowRight') lbGoTo(_lbIdx + 1);
+});
+
+
+function exportCSV() {
+  const headers = ['ID','Claim No.','Date','Customer','Email  Customer','Phone Customer','User','Claim By','Brand','Model','Serial','Date of Claim','Warranty Void','Year of Warranty','ภาพสินค้าที่เคลม','Symptom Informed (Operation)','Inspection Result (Operation)','Status','Solution'];
+  const csv = [headers.join(','), ...AD.map(d => headers.map(h => { const v = (d[h]||'').replace(/"/g,'""'); return (v.includes(',')||v.includes('"')||v.includes('\n')) ? `"${v}"` : v; }).join(','))].join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'inventory_claim_' + new Date().toISOString().substring(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ── Modal close ────────────────────────────────────────────────────────────
+function cm() { document.getElementById('mo').classList.remove('open'); document.body.style.overflow = ''; }
+function cmOuter(e) { if (e.target === document.getElementById('mo')) cm(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cm(); });
+function sw(t) { ['o','d'].forEach(x => { document.getElementById('c'+x).style.display = x===t?'block':'none'; document.getElementById('t'+x).classList.toggle('on', x===t); }); }
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadData(); updateApiBtn();
+setInterval(loadData, 5 * 60 * 1000);
+
+// ── API Settings Modal ─────────────────────────────────────────────────────
+function updateApiBtn() {
+  var btn = document.getElementById('apiBtnEl');
+  if (!btn) return;
+  if (APPS_SCRIPT_URL) {
+    btn.textContent = 'API ✅';
+    btn.classList.add('connected');
+    btn.title = 'API เชื่อมต่อแล้ว';
+  } else {
+    btn.textContent = '⚙️ API';
+    btn.classList.remove('connected');
+    btn.title = 'ยังไม่ได้ตั้งค่า API';
+  }
+}
+function openApiModal() {
+  var mo = document.getElementById('apiMo');
+  var inp = document.getElementById('apiUrlInput');
+  var st = document.getElementById('apiStatusTxt');
+  if (!mo) return;
+  inp.value = APPS_SCRIPT_URL || '';
+  st.innerHTML = APPS_SCRIPT_URL
+    ? '<span style="color:#10b981">✅ ตั้งค่าแล้ว</span>'
+    : '<span style="color:#f59e0b">⚠️ ยังไม่ได้ตั้งค่า</span>';
+  document.getElementById('apiTestResult').style.display = 'none';
+  mo.style.display = 'flex';
+  mo.style.opacity = '0';
+  mo.style.pointerEvents = 'auto';
+  setTimeout(function() { mo.style.opacity = '1'; mo.style.transition = 'opacity .2s'; }, 10);
+  document.body.style.overflow = 'hidden';
+}
+function closeApiModal(e) {
+  if (e.target === document.getElementById('apiMo')) closeApiModalDirect();
+}
+function closeApiModalDirect() {
+  var mo = document.getElementById('apiMo');
+  if (!mo) return;
+  mo.style.opacity = '0';
+  setTimeout(function() { mo.style.display = 'none'; mo.style.pointerEvents = 'none'; document.body.style.overflow = ''; }, 200);
+}
+function checkApiInput() {
+  document.getElementById('apiTestResult').style.display = 'none';
+}
+function saveApiUrl() {
+  var url = (document.getElementById('apiUrlInput').value || '').trim();
+  if (!url) { alert('กรุณาใส่ URL ก่อน'); return; }
+  if (!url.startsWith('https://script.google.com')) { alert('URL ต้องขึ้นต้นด้วย https://script.google.com'); return; }
+  APPS_SCRIPT_URL = url;
+  localStorage.setItem('claim_api_url', url);
+  updateApiBtn();
+  showToast('✅ บันทึก API URL เรียบร้อย!', 'ok');
+  closeApiModalDirect();
+}
+function clearApiUrl() {
+  if (!confirm('ล้าง API URL? การ Add/Edit/Delete จะไม่ Sync ไป Sheet')) return;
+  APPS_SCRIPT_URL = '';
+  localStorage.removeItem('claim_api_url');
+  document.getElementById('apiUrlInput').value = '';
+  document.getElementById('apiStatusTxt').innerHTML = '<span style="color:#f59e0b">⚠️ ล้างแล้ว</span>';
+  updateApiBtn();
+  showToast('⚠️ ล้าง API URL แล้ว', 'warn');
+}
+async function testApi() {
+  var url = (document.getElementById('apiUrlInput').value || '').trim();
+  var res = document.getElementById('apiTestResult');
+  if (!url) { alert('ใส่ URL ก่อน'); return; }
+  res.style.display = 'block';
+  res.style.color = '#94a3b8';
+  res.innerHTML = '🔄 กำลังทดสอบ...';
+  try {
+    // ใช้ POST + text/plain เพื่อหลีกเลี่ยง CORS preflight
+    var r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    var json = await r.json();
+    if (json.ok) {
+      res.style.color = '#10b981';
+      res.innerHTML = '✅ เชื่อมต่อสำเร็จ! พร้อมใช้งาน';
+    } else {
+      res.style.color = '#f43f5e';
+      res.innerHTML = '❌ Server ตอบกลับแต่มีข้อผิดพลาด: ' + (json.error || '');
+    }
+  } catch(e) {
+    res.style.color = '#f43f5e';
+    res.innerHTML = '❌ เชื่อมต่อไม่ได้: ' + e.message;
+  }
+}
+// ── Theme Toggle ───────────────────────────────────────────────────────
+const THEME_KEY = 'portal_theme';
+function applyTheme(t) {
+  if (t === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  else { document.body.classList.remove('dark'); document.getElementById('themeBtn').textContent = '🌙'; }
+}
+function toggleTheme() {
+  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next); applyTheme(next);
+}
+applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+</script>
+</body>
+</html>
+

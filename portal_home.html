@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>IT Support Portal - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#f0f4f8;--bg2:#ffffff;--card:#ffffff;--blue:#2563eb;--violet:#7c3aed;--cyan:#0891b2;--green:#059669;--t1:#0f172a;--t2:#334155;--t3:#64748b;--bdr:#e2e8f0}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans Thai','Inter',sans-serif;background:var(--bg);min-height:100vh;color:var(--t1);overflow-x:hidden}
+    .bg-anim{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.08}
+    .orb1{width:600px;height:600px;background:radial-gradient(circle,#3b82f6,transparent);top:-200px;left:-100px}
+    .orb2{width:500px;height:500px;background:radial-gradient(circle,#8b5cf6,transparent);bottom:-200px;right:-100px}
+    .hdr{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:rgba(255,255,255,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr)}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+    .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .nav{display:flex;align-items:center;gap:12px}
+    .user-chip{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.15);border-radius:20px;padding:6px 14px;font-size:12px;display:flex;align-items:center;gap:6px;color:var(--t1)}
+    .user-dot{width:6px;height:6px;border-radius:50%;background:#059669}
+    .btn-logout{background:rgba(225,29,72,.08);border:1px solid rgba(225,29,72,.2);color:#e11d48;border-radius:10px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-logout:hover{background:rgba(225,29,72,.15)}
+    .main{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:60px 24px}
+    .welcome{text-align:center;margin-bottom:60px}
+    .welcome h2{font-size:32px;font-weight:700;margin-bottom:10px}
+    .welcome h2 span{background:linear-gradient(90deg,#60a5fa,#a78bfa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .welcome p{font-size:14px;color:var(--t3)}
+    .time-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:20px;padding:5px 14px;font-size:11px;color:#34d399;margin-bottom:16px}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:#10b981;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .apps{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:48px}
+    @media(max-width:600px){.apps{grid-template-columns:1fr}}
+    .app-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;padding:36px 32px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;text-decoration:none;display:block;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .app-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;border-radius:24px}
+    .app-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.1)}
+    .app-card:hover::before{opacity:1}
+    .card-it::before{background:linear-gradient(135deg,rgba(37,99,235,.04),rgba(124,58,237,.04))}
+    .card-it:hover{border-color:rgba(37,99,235,.3);box-shadow:0 20px 50px rgba(37,99,235,.1)}
+    .card-claim::before{background:linear-gradient(135deg,rgba(5,150,105,.04),rgba(8,145,178,.04))}
+    .card-claim:hover{border-color:rgba(5,150,105,.3);box-shadow:0 20px 50px rgba(5,150,105,.1)}
+    .card-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;margin-bottom:20px}
+    .badge-it{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#60a5fa}
+    .badge-claim{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#34d399}
+    .card-icon{font-size:48px;margin-bottom:16px;display:block}
+    .card-title{font-size:20px;font-weight:700;margin-bottom:8px;color:var(--t1)}
+    .card-desc{font-size:12px;color:var(--t3);line-height:1.6;margin-bottom:20px}
+    .card-features{list-style:none;display:flex;flex-direction:column;gap:5px}
+    .card-features li{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:6px}
+    .card-features li::before{content:"✓";color:#10b981;font-weight:700}
+    .card-arrow{position:absolute;top:24px;right:24px;font-size:20px;opacity:.3;transition:all .3s}
+    .app-card:hover .card-arrow{opacity:1;transform:translateX(4px)}
+    
+    
+    
+    
+    
+    
+    
+    body.dark{--bg:#0a0f1e;--bg2:#0f172a;--card:#0f172a;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--bdr:rgba(255,255,255,.08)}
+    body.dark .hdr{background:rgba(10,15,30,.8)}
+    body.dark .app-card{background:#0f172a;border-color:rgba(255,255,255,.08)}
+    body.dark 
+    body.dark .card-title{color:#f1f5f9}
+  </style>
+</head>
+<body>
+<div class="bg-anim"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+
+<header class="hdr">
+  <div class="logo"><div class="logo-icon">🏠</div>IT Support Portal</div>
+  <nav class="nav">
+    <div id="currentTime" style="font-size:12px;color:var(--t3);font-family:monospace"></div>
+    <div class="user-chip"><div class="user-dot"></div><span id="userName">—</span></div>
+    <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+    <button id="themeBtn" onclick="toggleTheme()" style="background:none;border:1px solid var(--bdr);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:14px">🌙</button>
+  </nav>
+</header>
+
+<main class="main">
+  <div class="welcome">
+    <div class="time-badge"><div class="live-dot"></div> Live</div>
+    <h2>สวัสดี, <span id="greetName">—</span> 👋</h2>
+    <p>เลือกระบบที่ต้องการใช้งาน</p>
+  </div>
+
+  <div class="apps">
+    <a href="it_support.html" class="app-card card-it">
+      <div class="card-arrow">→</div>
+      <span class="card-badge badge-it">🔧 IT Support</span>
+      <span class="card-icon">🖥️</span>
+      <div class="card-title">IT Work Log</div>
+      <div class="card-desc">จัดการงาน IT Support, ติดตามสถานะ, ออกเลข Ticket อัตโนมัติ</div>
+      <ul class="card-features">
+        <li>บันทึกงานและ Ticket</li>
+        <li>กรองตามสถานะและความเร่งด่วน</li>
+        <li>Sync กับ Google Sheets</li>
+      </ul>
+    </a>
+    <a href="inventory_claim_dashboard.html" class="app-card card-claim">
+      <div class="card-arrow">→</div>
+      <span class="card-badge badge-claim">📦 Claim</span>
+      <span class="card-icon">📋</span>
+      <div class="card-title">Inventory Claim</div>
+      <div class="card-desc">ดูและจัดการ Claim สินค้า ติดตามสถานะการซ่อมและการรับประกัน</div>
+      <ul class="card-features">
+        <li>แสดงข้อมูล Claim จาก Google Form</li>
+        <li>อัพเดทสถานะและผลตรวจสอบ</li>
+        <li>Sync กับ Google Sheets</li>
+      </ul>
+    </a>
+  </div>
+  </div>
+</main>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('it_portal_user') || 'null');
+if (!user) { window.location.replace('portal_login.html'); }
+else { document.getElementById('userName').textContent = user.name; document.getElementById('greetName').textContent = user.name; }
+
+function updateTime() { document.getElementById('currentTime').textContent = new Date().toLocaleTimeString('th-TH',{hour12:false}); }
+updateTime(); setInterval(updateTime, 1000);
+
+function logout() { sessionStorage.removeItem('it_portal_user'); window.location.replace('portal_login.html'); }
+
+
+const THEME_KEY = 'portal_theme';
+function applyTheme(t) {
+  document.body.classList.toggle('dark', t==='dark');
+  document.getElementById('themeBtn').textContent = t==='dark' ? '☀️' : '🌙';
+}
+function toggleTheme() { const n = document.body.classList.contains('dark')?'light':'dark'; localStorage.setItem(THEME_KEY,n); applyTheme(n); }
+applyTheme(localStorage.getItem(THEME_KEY)||'light');
+</script>
+<script src="turtle.js"></script>
+</body>
+</html>

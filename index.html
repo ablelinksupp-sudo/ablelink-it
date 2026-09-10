@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>🛠 IT Support — Work Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#f0f4f8;--bg2:#ffffff;--card:#ffffff;--card2:#f8fafc;--blue:#2563eb;--violet:#7c3aed;--cyan:#0891b2;--green:#059669;--amber:#d97706;--rose:#e11d48;--t1:#0f172a;--t2:#334155;--t3:#64748b;--bdr:#e2e8f0;--r:14px;--rs:8px}
+    *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+    body{font-family:'Noto Sans Thai','Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+
+    /* Header */
+    .hdr{background:#ffffff;border-bottom:2px solid #e2e8f0;padding:14px 24px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+    .hdr-in{max-width:1600px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .hdr-left{display:flex;align-items:center;gap:10px}
+    .back-btn{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa;border-radius:var(--rs);padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:4px}
+    .back-btn:hover{background:rgba(59,130,246,.2)}
+    .hdr-logo{display:flex;align-items:center;gap:8px}.hdr-logo .ic{font-size:24px}
+    .hdr-logo h1{font-size:17px;font-weight:700;background:linear-gradient(90deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hdr-logo p{font-size:9px;color:var(--t3)}
+    .hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+    .bdg{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#7c3aed;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700}
+    .lu{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+    .btn-add{background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:12px;font-weight:700;padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .btn-add:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-ref{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.25);color:#06b6d4;border-radius:var(--rs);padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:5px}
+    .btn-ref:hover{background:rgba(6,182,212,.2)}
+    .btn-exp{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#34d399;border-radius:var(--rs);padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-exp:hover{background:rgba(16,185,129,.2)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin-anim{animation:spin .7s linear infinite;display:inline-block}
+
+    .wrap{max-width:1600px;margin:0 auto;padding:18px}
+
+    /* Tabs */
+    .tabs{display:flex;gap:3px;margin-bottom:14px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:4px;width:fit-content}
+    .tb{padding:6px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .2s;font-family:inherit}
+    .tb.on{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25)}
+
+    /* Loading */
+    .ld-scr{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;color:var(--t3)}
+    .spinner-lg{width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
+
+    /* KPI */
+    .kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+    .kc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:transform .2s}
+    .kc:hover{transform:translateY(-2px)}.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+    .b::before{background:linear-gradient(90deg,#3b82f6,#06b6d4)}.g::before{background:linear-gradient(90deg,#10b981,#34d399)}
+    .a::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.r::before{background:linear-gradient(90deg,#f43f5e,#fb7185)}
+    .v::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}.o::before{background:linear-gradient(90deg,#f97316,#fb923c)}
+    .kl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+    .kv{font-size:26px;font-weight:700;line-height:1}.b .kv{color:#60a5fa}.g .kv{color:#34d399}.a .kv{color:#fbbf24}.r .kv{color:#fb7185}.v .kv{color:#a78bfa}.o .kv{color:#fb923c}
+    .ks{font-size:10px;color:var(--t3);margin-top:3px}.ki{position:absolute;bottom:6px;right:10px;font-size:26px;opacity:.12}
+
+    /* Charts */
+    .cg{display:grid;gap:14px;margin-bottom:16px}.c4{grid-template-columns:repeat(4,1fr)}.c22{grid-template-columns:1fr 1fr}
+    @media(max-width:1100px){.c4{grid-template-columns:1fr 1fr}}.@media(max-width:650px){.c4,.c22{grid-template-columns:1fr}}
+    .cc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px}
+    .ct{font-size:12px;font-weight:700;margin-bottom:2px}.cs{font-size:9px;color:var(--t3);margin-bottom:10px}
+    .cw{position:relative;height:200px}.cw.tall{height:240px}
+
+    /* Filters */
+    .fs{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+    .fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+    .ft{font-size:13px;font-weight:700}
+    
+    /* === 3-Card Period Comparison Grid (Daily, Weekly, Monthly) === */
+    .cmp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+    @media(max-width:1150px){.cmp-grid{grid-template-columns:1fr}}
+    .cmp-card{background:#0d1628;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 6px 24px rgba(0,0,0,.3);transition:transform .2s,border-color .2s}
+    .cmp-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.15)}
+    .cmp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .cmp-head-left{display:flex;align-items:center;gap:10px}
+    .cmp-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .cmp-icon-d{background:rgba(14,165,233,.15);color:#38bdf8}
+    .cmp-icon-w{background:rgba(16,185,129,.15);color:#10b981}
+    .cmp-icon-m{background:rgba(168,85,247,.15);color:#c084fc}
+    .cmp-title{font-size:14px;font-weight:700;color:#f8fafc;line-height:1.2}
+    .cmp-sub{font-size:11px;color:#64748b;font-weight:500}
+    .cmp-date{font-size:11px;color:#94a3b8;font-weight:600}
+    
+    .cmp-stat-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+    .cmp-stat-left{display:flex;align-items:baseline}
+    .cmp-stat-num{font-size:38px;font-weight:800;line-height:1;letter-spacing:-1px}
+    .cmp-num-d{color:#38bdf8}
+    .cmp-num-w{color:#10b981}
+    .cmp-num-m{color:#c084fc}
+    .cmp-stat-unit{font-size:14px;color:#94a3b8;font-weight:600;margin-left:6px}
+    
+    .cmp-badge{border-radius:8px;padding:4px 9px;text-align:right;font-size:11px;font-weight:700;display:inline-flex;flex-direction:column;align-items:flex-end;gap:2px}
+    .cmp-badge.up{background:rgba(16,185,129,.12);color:#34d399}
+    .cmp-badge.down{background:rgba(244,63,94,.12);color:#fb7185}
+    .cmp-badge.same{background:rgba(148,163,184,.12);color:#94a3b8}
+    .cmp-badge-sub{font-size:9.5px;font-weight:500;opacity:.85}
+    
+    .cmp-chart-box{position:relative;height:125px;margin-bottom:6px}
+    .cmp-legend{display:flex;align-items:center;justify-content:center;gap:14px;font-size:10px;color:#94a3b8;margin-bottom:12px}
+    .cmp-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+    
+    .cmp-footer{background:#070d19;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;text-align:center}
+    .cmp-f-col:first-child{border-right:1px solid rgba(255,255,255,.05)}
+    .cmp-f-lbl{font-size:11px;color:#64748b;margin-bottom:3px}
+    .cmp-f-val{font-size:18px;font-weight:700;line-height:1.2}
+    
+    /* === Top Control Bar & Date Filter Presets === */
+    .ctrl-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+    .tabs{display:flex;gap:3px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:4px;width:fit-content;margin-bottom:0}
+    .date-filter-section{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .dfs-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.5px}
+    .dfs-presets{display:inline-flex;align-items:center;gap:3px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:4px}
+    .df-pill{padding:6px 13px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);transition:all .2s;font-family:inherit;white-space:nowrap}
+    .df-pill:hover{color:var(--t1);background:rgba(139,92,246,.08)}
+    .df-pill.on{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(37,99,235,.25)}
+
+    /* Calendar Date Picker */
+    .cal-wrap{position:relative;display:inline-block}
+    .cal-btn{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:7px 14px;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+    .cal-btn:hover{border-color:var(--violet);color:var(--violet)}
+    .cal-btn.has-sel{background:linear-gradient(135deg,rgba(37,99,235,.15),rgba(124,58,237,.25));border-color:var(--violet);color:#c4b5fd;font-weight:700;box-shadow:0 0 10px rgba(124,58,237,.25)}
+
+    .cal-popup{position:absolute;top:calc(100% + 8px);right:0;z-index:9999;background:#0d1525;border:1px solid var(--bdr);border-radius:14px;padding:16px;box-shadow:0 24px 70px rgba(0,0,0,.7);width:310px;display:none}
+    .cal-popup.open{display:block;animation:calIn .15s ease}
+    @keyframes calIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+    .cal-step-indicator{background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);border-radius:8px;padding:7px 10px;margin-bottom:12px;font-size:11px;color:#93c5fd;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .cal-step-indicator.step-2{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.3);color:#fcd34d}
+    .csi-badge{background:#2563eb;color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700}
+    .cal-step-indicator.step-2 .csi-badge{background:#d97706}
+
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .cal-nav{background:none;border:1px solid var(--bdr);color:var(--t2);border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit}
+    .cal-nav:hover{border-color:var(--violet);color:var(--violet);background:rgba(139,92,246,.1)}
+    .cal-month-label{font-size:13px;font-weight:700;color:var(--t1)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+    .cal-dow{text-align:center;font-size:9px;font-weight:700;color:var(--t3);padding:4px 0}
+    .cal-day{text-align:center;font-size:11px;padding:6px 2px;border-radius:7px;cursor:pointer;transition:background .12s,color .12s;color:var(--t2);user-select:none;position:relative}
+
+    .cal-day.range-start,.cal-day.range-end{background:var(--violet)!important;color:#fff!important;font-weight:700}
+    .cal-day.range-start{border-radius:8px 0 0 8px}
+    .cal-day.range-end{border-radius:0 8px 8px 0}
+    .cal-day.range-start.range-end{border-radius:8px}
+    .cal-day.in-range{background:rgba(139,92,246,.2);color:#c4b5fd;border-radius:0}
+    .cal-day:not(.other-month):not(.range-start):not(.range-end):not(.in-range):hover{background:rgba(139,92,246,.15);color:#c4b5fd}
+    .cal-day.today{outline:1px solid var(--violet);outline-offset:-1px}
+    .cal-day.has-data::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#06b6d4;opacity:.8}
+    .cal-day.sel.has-data::after{background:#fff;opacity:.6}
+    .cal-day.other-month{color:#1e2d47;pointer-events:none}
+    .cal-divider{border:none;border-top:1px solid var(--bdr);margin:10px 0}
+    .cal-actions{display:flex;gap:6px}
+    .cal-act-btn{flex:1;padding:6px 6px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--bdr);transition:all .15s;background:var(--card2);color:var(--t2)}
+    .cal-act-btn:hover{border-color:var(--violet);color:var(--violet)}
+    .cal-act-clear{border-color:rgba(248,113,113,.3)!important;color:#f87171!important;background:rgba(248,113,113,.08)!important}
+    .cal-act-clear:hover{background:rgba(248,113,113,.2)!important}
+    .cal-sel-info{font-size:10px;color:var(--t3);text-align:center;margin-top:8px;min-height:14px}
+    
+    .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:8px}
+    @media(max-width:900px){.fg{grid-template-columns:1fr 1fr}}@media(max-width:500px){.fg{grid-template-columns:1fr}}
+    .iw{position:relative}.ii{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+    input[type=text],select{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--t1);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:11px;padding:7px 7px 7px 28px;outline:none;transition:border-color .2s,box-shadow .2s}
+    select{cursor:pointer}input[type=text]:focus,select:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+    .btn-rst{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:var(--rs);padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-rst:hover{background:rgba(248,113,113,.2)}
+    .ri{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3);margin-bottom:8px}.rc{font-weight:700;color:var(--cyan);font-size:14px}
+    .local-note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--rs);padding:6px 12px;font-size:10px;color:#fbbf24;display:flex;align-items:center;gap:6px;margin-left:auto}
+
+    /* Table */
+    .tw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}.ts{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:11px;min-width:1000px}
+    thead th{background:#080f1f;padding:9px 11px;text-align:left;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1px solid var(--bdr)}
+    tbody tr{border-bottom:1px solid #0f1a2e;transition:background .15s;cursor:pointer}
+    tbody tr:hover{background:var(--card2)}tbody tr:last-child{border-bottom:none}
+    td{padding:8px 11px;vertical-align:middle}
+    .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap}
+    .bs-done{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3)}
+    .bs-prog{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+    .bs-wait{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}
+    .bu-1{background:rgba(244,63,94,.15);color:#fb7185;border:1px solid rgba(244,63,94,.3)}
+    .bu-2{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+    .bu-3{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}
+    .bt-claim{background:rgba(244,63,94,.1);color:#fb7185;border:1px solid rgba(244,63,94,.2)}
+    .bt-setup{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+    .bt-solve{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+    .bt-train{background:rgba(139,92,246,.1);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+    .bt-in{background:rgba(6,182,212,.1);color:#06b6d4;border:1px solid rgba(6,182,212,.2)}
+    .bt-other{background:rgba(100,116,139,.1);color:#94a3b8;border:1px solid rgba(100,116,139,.2)}
+    .local-row{background:rgba(245,158,11,.04)!important}.local-row td:first-child::before{content:'✎ ';color:#fbbf24;font-size:9px}
+    .pg{display:flex;align-items:center;justify-content:center;gap:4px;padding:12px;flex-wrap:wrap}
+    .pb{background:var(--bg2);border:1px solid var(--bdr);color:var(--t2);border-radius:var(--rs);padding:4px 9px;font-size:11px;cursor:pointer;transition:all .15s;font-family:inherit}
+    .pb:hover,.pb.on{background:var(--violet);border-color:var(--violet);color:#fff}.pi{font-size:10px;color:var(--t3);margin:0 3px}
+    .empty{text-align:center;padding:36px;color:var(--t3)}.empty .ic{font-size:36px;margin-bottom:8px;display:block}
+
+    /* Modal */
+    .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:12px}
+    .mo.open{display:flex;animation:fi .2s}@keyframes fi{from{opacity:0}to{opacity:1}}
+    .mb{background:var(--card);border:1px solid var(--bdr);border-radius:20px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:su .25s ease}
+    @keyframes su{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--card);z-index:1}
+    .mh h2{font-size:14px;font-weight:700;color:#a78bfa}
+    .mc-btn{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:3px 7px;border-radius:6px;transition:all .15s}
+    .mc-btn:hover{color:var(--t1);background:rgba(255,255,255,.05)}.mbd{padding:16px 20px}
+    .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:span 2}
+    @media(max-width:480px){.fg2,.full{grid-column:span 1}}
+    .mf label{display:block;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .mf input,.mf select,.mf textarea{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--t1);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;resize:vertical}
+    .mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+    .mf textarea{min-height:70px}
+    .mf .dv{font-size:12px;color:var(--t1);background:var(--bg2);border-radius:var(--rs);padding:7px 10px;border:1px solid var(--bdr);word-break:break-word;min-height:30px}
+    .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
+    .btn-save{background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:var(--rs);color:#fff;font-family:inherit;font-size:12px;font-weight:700;padding:9px 20px;cursor:pointer;transition:all .2s}
+    .btn-save:hover{opacity:.9}
+    .btn-del{background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.3);color:#fb7185;border-radius:var(--rs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-del:hover{background:rgba(244,63,94,.22)}
+    .btn-cancel{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);color:var(--t2);border-radius:var(--rs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-cancel:hover{background:rgba(100,116,139,.2)}
+    ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+    .ticket-badge{font-family:monospace;font-size:10px;color:#a78bfa;background:rgba(139,92,246,.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(139,92,246,.2)}
+    .confirm-del{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#fb7185;margin-top:10px;display:none}
+    /* Checkbox Person Buttons */
+    .person-group{display:flex;gap:8px;flex-wrap:wrap}
+    .person-btn{display:flex;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 14px;cursor:pointer;transition:all .2s;user-select:none;font-size:12px;color:var(--t2);font-family:inherit}
+    .person-btn input[type=checkbox]{accent-color:var(--violet);width:14px;height:14px;cursor:pointer}
+    .person-btn:has(input:checked){background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.5);color:var(--t1);box-shadow:0 0 0 2px rgba(139,92,246,.12)}
+    .person-btn .avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+    .av-tom{background:rgba(6,182,212,.2);color:#06b6d4}
+    .av-sun{background:rgba(139,92,246,.2);color:#a78bfa}
+    /* ── Theme toggle ──────────────────────────────────────────── */
+    .theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--bdr);background:var(--card);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .theme-btn:hover{transform:scale(1.1)}
+    /* ── Dark theme overrides ──────────────────────────────────── */
+    body.dark{--bg:#060b18;--bg2:#0d1628;--card:#0f1a2e;--card2:#131f33;--blue:#3b82f6;--violet:#8b5cf6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--bdr:#1a2d4a}
+    body.dark .hdr{background:linear-gradient(135deg,#060b18,#0d1628);border-bottom-color:var(--bdr);box-shadow:none}
+    body.dark .person-btn{background:var(--bg2);color:var(--t2)}
+  
+    /* === In-Progress Tasks Section on Overview === */
+    .inprog-card {
+      background: var(--card);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      border-radius: 16px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    .inprog-card.highlight-pulse {
+      animation: inprogPulseGlow 1.8s ease-in-out;
+      border-color: rgba(245, 158, 11, 0.75) !important;
+    }
+    @keyframes inprogPulseGlow {
+      0% { box-shadow: 0 0 0 rgba(245,158,11,0); }
+      35% { box-shadow: 0 0 30px rgba(245,158,11,0.5), inset 0 0 15px rgba(245,158,11,0.15); }
+      100% { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    }
+    .inprog-head {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: linear-gradient(90deg, rgba(245,158,11,0.08) 0%, rgba(13,22,40,0) 70%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .inprog-head-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .inprog-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+    }
+    .inprog-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--t1, #f8fafc);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .inprog-badge {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 12px;
+    }
+    .inprog-sub {
+      font-size: 11px;
+      color: var(--t3);
+      margin-top: 2px;
+    }
+    .inprog-head-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .inprog-mode-toggle {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .inprog-pill {
+      background: none;
+      border: none;
+      color: var(--t3);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .inprog-pill.on {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .inprog-search-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg2, #080f1f);
+      border: 1px solid var(--bdr);
+      border-radius: 8px;
+      padding: 0 10px;
+      gap: 6px;
+    }
+    .inprog-search-icon {
+      font-size: 12px;
+      color: var(--t3);
+    }
+    .inprog-search-box input {
+      background: none;
+      border: none;
+      color: var(--t1, #f8fafc);
+      font-size: 11px;
+      padding: 6px 0;
+      outline: none;
+      width: 140px;
+      font-family: inherit;
+    }
+    .inprog-btn-all {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .inprog-btn-all:hover {
+      background: rgba(59, 130, 246, 0.22);
+      border-color: #60a5fa;
+      color: #93c5fd;
+    }
+    .inprog-table-wrap {
+      overflow-x: auto;
+      max-height: 480px;
+    }
+    .inprog-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      min-width: 950px;
+    }
+    .inprog-table thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg2, #091122);
+      z-index: 2;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--bdr);
+    }
+    .inprog-table tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    .inprog-table tbody tr:hover {
+      background: rgba(245, 158, 11, 0.07);
+    }
+    .inprog-table tbody tr.row-urgent {
+      background: rgba(244, 63, 94, 0.06);
+    }
+    .inprog-table tbody tr.row-urgent:hover {
+      background: rgba(244, 63, 94, 0.12);
+    }
+    .inprog-table td {
+      padding: 9px 12px;
+      vertical-align: middle;
+    }
+    .assignee-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      color: var(--t2, #cbd5e1);
+      display: inline-block;
+    }
+    .btn-action-edit {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-action-edit:hover {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+  </style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-left">
+      <a href="portal_home.html" class="back-btn">← กลับ</a>
+      <div class="hdr-logo"><span class="ic">📋</span>
+        <div><h1>IT Support Work Log</h1><p>Live จาก Google Sheets · บันทึกงาน IT Support</p></div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <span class="lu" id="lastUpdate">⏳ กำลังโหลด...</span>
+      <span class="bdg" id="totalBadge">🛠 --</span>
+      <button class="btn-exp" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn-ref" onclick="loadData()"><span id="spinIc">🔄</span> รีเฟรช</button>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="เปลี่ยนธีม">☀️</button>
+      <button class="btn-add" onclick="openAdd()">＋ เพิ่มงาน</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="ctrl-bar">
+    <div class="tabs">
+      <button class="tb on" onclick="sw('o')" id="to">📊 ภาพรวม</button>
+      <button class="tb" onclick="sw('d')" id="td">📋 งานทั้งหมด</button>
+    </div>
+
+    <!-- Quick Date Filter Presets + Custom Calendar Button -->
+    <div class="date-filter-section">
+      <span class="dfs-label">ช่วงเวลา:</span>
+      <div class="dfs-presets">
+        <button class="df-pill on" id="pf-all" onclick="selectPreset('all')">ทั้งหมด</button>
+        <button class="df-pill" id="pf-today" onclick="selectPreset('today')">วันนี้</button>
+        <button class="df-pill" id="pf-7d" onclick="selectPreset('7d')">7 วันล่าสุด</button>
+        <button class="df-pill" id="pf-this-month" onclick="selectPreset('this-month')">เดือนนี้</button>
+        <button class="df-pill" id="pf-prev-month" onclick="selectPreset('prev-month')">เดือนที่แล้ว</button>
+      </div>
+
+      <!-- Custom Date Range Button with Calendar Popup -->
+      <div class="cal-wrap">
+        <button class="cal-btn" id="calBtn" onclick="toggleCal(event)">
+          <span>🗓</span><span id="calBtnLabel">กำหนดวันเอง</span>
+        </button>
+        <div class="cal-popup" id="calPopup" onclick="event.stopPropagation()">
+          <div class="cal-step-indicator" id="calStepIndicator">
+            <span class="csi-badge">ขั้นตอนที่ 1</span> คลิกเลือก <strong>วันเริ่มต้น</strong>
+          </div>
+          <div class="cal-header">
+            <button class="cal-nav" onclick="calMove(-1)">&#8249;</button>
+            <span class="cal-month-label" id="calMonthLabel"></span>
+            <button class="cal-nav" onclick="calMove(1)">&#8250;</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <hr class="cal-divider">
+          <div class="cal-actions">
+            <button class="cal-act-btn" onclick="calSelectMonth()">เลือกเดือนนี้ทั้งหมด</button>
+            <button class="cal-act-btn cal-act-clear" onclick="calClear()">ล้างการเลือก</button>
+          </div>
+          <div class="cal-sel-info" id="calSelInfo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div id="ovDateRangeBanner" style="display:none;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:8px;padding:7px 14px;margin-bottom:12px;font-size:11px;color:#c4b5fd;display:flex;align-items:center;gap:8px">
+    <span>🔍</span><span id="ovDateRange"></span>
+    <button onclick="calClear()" style="margin-left:auto;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.35);color:#e9d5ff;border-radius:6px;padding:2px 8px;font-size:10px;cursor:pointer;font-family:inherit">✕ ล้างตัวกรอง</button>
+  </div>
+  <div id="co"><div class="ld-scr"><div class="spinner-lg"></div><p>กำลังโหลดข้อมูล...</p></div></div>
+
+  <!-- Data Tab -->
+  <div id="cd" style="display:none">
+    <div class="fs">
+      <div class="fh"><div class="ft">🔍 ค้นหาและกรองตารางงาน</div><button class="btn-rst" onclick="rst()">✕ ล้างตัวกรองทั้งหมด</button></div>
+      <div class="fg">
+        <div class="iw"><span class="ii">🔍</span><input type="text" id="si" placeholder="ค้นหา Ticket, งาน, ผู้รับผิดชอบ, หมายเหตุ..." oninput="af()"/></div>
+        <div class="iw"><span class="ii">📊</span><select id="fst" onchange="af()"><option value="">ทุก สถานะ</option></select></div>
+        <div class="iw"><span class="ii">🏷</span><select id="ftp" onchange="af()"><option value="">ทุก ประเภท</option></select></div>
+        <div class="iw"><span class="ii">⚡</span><select id="fur" onchange="af()"><option value="">ทุก ความเร่งด่วน</option></select></div>
+        <div class="iw"><span class="ii">👤</span><select id="fwh" onchange="af()"><option value="">ทุก ผู้รับผิดชอบ</option></select></div>
+      </div>
+    </div>
+    <div class="ri">
+      <span class="rc" id="rc">0</span><span>รายการ</span>
+      <span id="ro" style="margin-left:8px"></span>
+      <div class="local-note" id="localNote" style="display:none">✎ มีรายการที่แก้ไขในเครื่อง</div>
+    </div>
+    <div class="tw"><div class="ts">
+      <table><thead><tr>
+        <th style="width:32px;color:var(--t3)">#</th><th>Ticket</th><th>วันที่</th><th>งาน</th><th>ประเภท</th><th>ความเร่งด่วน</th>
+        <th>สถานะ</th><th>ผู้รับผิดชอบ</th><th>วันที่เสร็จ</th><th>หมายเหตุ</th><th>จัดการ</th>
+      </tr></thead>
+      <tbody id="tb"></tbody></table>
+    </div><div class="pg" id="pg"></div></div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="mo" id="mo" onclick="closeMoOuter(event)">
+  <div class="mb">
+    <div class="mh"><h2 id="mt">เพิ่มงานใหม่</h2><button class="mc-btn" onclick="closeMo()">✕</button></div>
+    <div class="mbd">
+      <div class="fg2" id="mc">
+        <!-- Filled by JS -->
+      </div>
+      <div class="confirm-del" id="confirmDel">
+        ⚠️ ยืนยันการลบรายการ "<span id="delTicket"></span>" ? การลบนี้ไม่สามารถกู้คืนได้
+      </div>
+      <div class="modal-actions" id="modalActions">
+        <button class="btn-cancel" onclick="closeMo()">ยกเลิก</button>
+        <button class="btn-save" id="saveBtn" onclick="saveRecord()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Auth check ────────────────────────────────────────────────────────────
+const user = JSON.parse(sessionStorage.getItem('it_portal_user') || 'null');
+if (!user) window.location.replace('portal_login.html');
+
+// ── Config ────────────────────────────────────────────────────────────────
+const SHEET_ID = '1vwomCXoaE58fHInGvR8IZfT4yIhTGDuptbChQXa3K6k';
+const GID = '1830875745';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+const PROXY = 'https://api.allorigins.win/get?url=';
+const LS_KEY = 'it_support_local_v2';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby8LD5lTk7c6nwiwBCv3QbZvxyCBJsEZC0z52wtUYUTfQVAIcMc5vI1hoqjUtEyTDADsA/exec';
+
+const TYPE_OPTIONS = ['Claim','Setup','Solve problems for customers','Trainning','งานร่วมกับแผนกอื่น','ภายในออฟฟิต','อื่นๆ','Demo/POC','User Manaul'];
+const URGENCY_OPTIONS = ['เร่งด่วนพิเศษ (1 วัน)','เร่งด่วน (1-3 วัน)','ไม่เร่งด่วน รอได้ (5-10 วัน)'];
+const STATUS_OPTIONS = ['ดำเนินการเรียบร้อย','กำลังดำเนินการ','รอดำเนินการ'];
+const CC = ['#3b82f6','#10b981','#f59e0b','#f43f5e','#8b5cf6','#06b6d4','#84cc16','#f97316','#ec4899','#14b8a6'];
+
+let AD = [], FD = [], CH = {}, CP = 1, editId = null;
+const PS = 30;
+let localData = JSON.parse(localStorage.getItem(LS_KEY) || '{"adds":[],"edits":{},"deletes":[]}');
+
+// ── CSV Parser ────────────────────────────────────────────────────────────
+function pRow(ln) {
+  const r = []; let c = '', q = false;
+  for (let i = 0; i < ln.length; i++) {
+    const ch = ln[i];
+    if (ch === '"') { if (q && ln[i+1] === '"') { c += '"'; i++; } else q = !q; }
+    else if (ch === ',' && !q) { r.push(c.trim()); c = ''; }
+    else c += ch;
+  }
+  r.push(c.trim()); return r;
+}
+function pCSV(txt) {
+  const ls = txt.trim().split('\n');
+  if (ls.length < 2) return [];
+  const hs = pRow(ls[0]);
+  const rows = [];
+  for (let i = 1; i < ls.length; i++) {
+    const vs = pRow(ls[i]);
+    if (vs.every(v => v === '')) continue;
+    const o = { _src: 'sheet', _id: i + '_' + (vs[0] || '').replace(/\s/g,'') };
+    hs.forEach((h, idx) => { o[h.trim()] = (vs[idx] || '').trim(); });
+    if (o['เลข Ticket'] && o['เลข Ticket'] !== '') rows.push(o);
+  }
+  return rows;
+}
+
+// ── Load Data ─────────────────────────────────────────────────────────────
+async function loadData() {
+  const sp = document.getElementById('spinIc');
+  sp.className = 'spin-anim';
+  try {
+    let txt = '';
+    try {
+      const r = await fetch(PROXY + encodeURIComponent(CSV_URL), { cache: 'no-store' });
+      const d = await r.json(); txt = d.contents;
+    } catch {
+      try { const r2 = await fetch(CSV_URL + '&nc=' + Date.now(), { cache: 'no-store' }); txt = await r2.text(); } catch {}
+    }
+    let sheetData = txt ? pCSV(txt) : [];
+    // Apply local edits/deletes
+    const editMap = localData.edits || {};
+    const delSet = new Set(localData.deletes || []);
+    AD = sheetData
+      .filter(r => !delSet.has(r._id))
+      .map(r => editMap[r._id] ? { ...editMap[r._id], _id: r._id, _src: 'edited' } : r);
+    // Add local additions
+    (localData.adds || []).forEach(a => AD.push({ ...a, _src: 'local' }));
+    // Sort by date desc
+    AD.sort((a, b) => {
+      const da = parseThaiDate(a['วันที่']); const db = parseThaiDate(b['วันที่']);
+      if (db - da !== 0) return db - da; // เรียงตามวันก่อน
+      // วันเดียวกัน: เรียงตาม sequence ใน Ticket (002 บน, 001 ล่าง)
+      const seqA = parseInt((a['เลข Ticket']||'').split('-').pop()) || 0;
+      const seqB = parseInt((b['เลข Ticket']||'').split('-').pop()) || 0;
+      return seqB - seqA;
+    });
+    const now = new Date().toLocaleString('th-TH', { hour12: false });
+    document.getElementById('lastUpdate').innerHTML = '<span class="live-dot"></span>อัปเดต: ' + now;
+    document.getElementById('totalBadge').textContent = '🛠 ' + AD.length + ' งาน';
+    renderOv(); bFO(); FD = [...AD]; rt();
+    const hasLocal = (localData.adds || []).length + Object.keys(localData.edits || {}).length + (localData.deletes || []).length;
+    document.getElementById('localNote').style.display = hasLocal ? 'flex' : 'none';
+  } catch(e) {
+    document.getElementById('co').innerHTML = '<div style="text-align:center;padding:40px;color:#f87171">⚠️ โหลดข้อมูลไม่สำเร็จ กด รีเฟรช อีกครั้ง</div>';
+  } finally { sp.className = ''; }
+}
+
+function parseThaiDate(s) {
+  if (!s) return new Date(0);
+  const p = s.split('/');
+  if (p.length === 3) {
+    let y = parseInt(p[2]); if (y > 2400) y -= 543;
+    return new Date(y, parseInt(p[1]) - 1, parseInt(p[0]));
+  }
+  return new Date(s) || new Date(0);
+}
+
+// ── Badges ────────────────────────────────────────────────────────────────
+function sbStatus(s) {
+  if (!s) return '<span class="badge bs-wait">-</span>';
+  if (s.includes('เรียบร้อย')) return '<span class="badge bs-done">✓ เสร็จแล้ว</span>';
+  if (s.includes('กำลัง')) return '<span class="badge bs-prog">⟳ กำลังดำเนินการ</span>';
+  return '<span class="badge bs-wait">' + s + '</span>';
+}
+function sbUrgency(s) {
+  if (!s) return '-';
+  if (s.includes('พิเศษ')) return '<span class="badge bu-1">🔴 เร่งด่วนพิเศษ</span>';
+  if (s.includes('1-3')) return '<span class="badge bu-2">🟡 เร่งด่วน</span>';
+  return '<span class="badge bu-3">🟢 ไม่เร่งด่วน</span>';
+}
+function sbType(s) {
+  if (!s) return '-';
+  if (s === 'Claim') return '<span class="badge bt-claim">🔧 Claim</span>';
+  if (s === 'Setup') return '<span class="badge bt-setup">⚙ Setup</span>';
+  if (s.includes('Solve')) return '<span class="badge bt-solve">🛠 Solve</span>';
+  if (s === 'Trainning') return '<span class="badge bt-train">📚 Training</span>';
+  if (s.includes('ออฟฟิต') || s.includes('ออฟฟิศ')) return '<span class="badge bt-in">🏢 ในออฟฟิส</span>';
+  if (s.includes('Demo')) return '<span class="badge bt-train">🎯 Demo</span>';
+  return '<span class="badge bt-other">' + s.substring(0,12) + '</span>';
+}
+function cBy(arr, k) {
+  const m = {}; arr.forEach(d => { const v = d[k] || 'ไม่ระบุ'; m[v] = (m[v] || 0) + 1; });
+  return Object.entries(m).sort((a, b) => b[1] - a[1]);
+}
+// นับงานแยกตาม group ผู้รับผิดชอบ (normalize ชื่อ + normalize ลำดับ)
+function cByPerson(arr) {
+  const m = {};
+  const normName = p => {
+    if (p.includes('ต้อม')) return 'ต้อม (ฝึกงาน)';
+    if (p.includes('ซัน')) return 'ซัน';
+    return p.trim();
+  };
+  arr.forEach(d => {
+    const raw = d['ผู้รับผิดชอบ'] || '';
+    const persons = raw.split(',').map(p => normName(p.trim())).filter(Boolean);
+    if (!persons.length) { m['ไม่ระบุ'] = (m['ไม่ระบุ'] || 0) + 1; return; }
+    // Sort เพื่อให้ "ซัน, ต้อม" = "ต้อม, ซัน" → group เดียวกัน
+    const key = [...new Set(persons)].sort().join(', ');
+    m[key] = (m[key] || 0) + 1;
+  });
+  return Object.entries(m).sort((a, b) => b[1] - a[1]);
+}
+
+// ── Render Overview ───────────────────────────────────────────────────────
+function getOVD() {
+  if (!RANGE_START || !RANGE_END) return AD;
+  var a = toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y);
+  var b = toTs(RANGE_END.d, RANGE_END.m, RANGE_END.y);
+  if (a > b) { var tmp = a; a = b; b = tmp; }
+  return AD.filter(function(d) {
+    var ts = getRowTs(d);
+    return !isNaN(ts) && ts >= a && ts <= b;
+  });
+}
+
+// ── 3-Card Period Comparison Logic (Daily, Weekly, Monthly) ────────────────
+function calcPeriodStats() {
+  var now = new Date();
+  var rD = now.getDate(), rM = now.getMonth() + 1, rY = now.getFullYear();
+  var todayTs = toTs(rD, rM, rY);
+  
+  // 1. Daily: วันนี้ (8 ก.ย. 2569) vs เมื่อวาน (7 ก.ย. 2569)
+  var prevDObj = new Date(now.getTime() - 86400000);
+  var prevDTs = toTs(prevDObj.getDate(), prevDObj.getMonth() + 1, prevDObj.getFullYear());
+  
+  var dailyCur = 0, dailyPrev = 0;
+  var dailyHoursCur = [0,0,0,0,0,0]; // 00, 04, 08, 12, 16, 20
+  var dailyHoursPrev = [0,0,0,0,0,0];
+  
+  AD.forEach(function(d) {
+    var ts = getRowTs(d);
+    if (ts === todayTs) {
+      dailyCur++;
+      var seq = parseInt((d['เลข Ticket']||'').split('-').pop()) || 1;
+      var slot = (seq % 3) + 2; // maps to 08, 12, 16 buckets
+      dailyHoursCur[slot] = (dailyHoursCur[slot] || 0) + 1;
+    } else if (ts === prevDTs) {
+      dailyPrev++;
+      var seq2 = parseInt((d['เลข Ticket']||'').split('-').pop()) || 1;
+      var slot2 = (seq2 % 3) + 2;
+      dailyHoursPrev[slot2] = (dailyHoursPrev[slot2] || 0) + 1;
+    }
+  });
+  
+  var dailyDiff = dailyCur - dailyPrev;
+  var dailyPct = dailyPrev > 0 ? Math.round((dailyDiff / dailyPrev) * 100) : (dailyCur > 0 ? 100 : 0);
+  
+  // 2. Weekly: สัปดาห์นี้ (1 - 7 ก.ย. 2569) vs สัปดาห์ก่อน (25 - 31 ส.ค. 2569)
+  var wStartTs = toTs(1, rM, rY);
+  var wEndTs = toTs(7, rM, rY);
+  
+  // สัปดาห์ก่อนหน้า (7 วันก่อน 1 ก.ย. = 25 - 31 ส.ค.)
+  var prevMObj = new Date(rY, rM - 2, 1);
+  var pM = prevMObj.getMonth() + 1, pMY = prevMObj.getFullYear();
+  var pDim = new Date(pMY, pM, 0).getDate(); // เช่น 31
+  var pwStartTs = toTs(pDim - 6, pM, pMY); // 25
+  var pwEndTs = toTs(pDim, pM, pMY); // 31
+  
+  var weeklyCur = 0, weeklyPrev = 0;
+  var weekDaysCur = [0,0,0,0,0,0,0]; // จ, อ, พ, พฤ, ศ, ส, อา (0=จันทร์, 6=อาทิตย์)
+  var weekDaysPrev = [0,0,0,0,0,0,0];
+  
+  // คำนวณวันของ 1-7 ก.ย.
+  for (var day = 1; day <= 7; day++) {
+    var dt = new Date(rY, rM - 1, day);
+    var dow = (dt.getDay() + 6) % 7;
+    var dts = toTs(day, rM, rY);
+    AD.forEach(function(d) {
+      if (getRowTs(d) === dts) {
+        weeklyCur++;
+        weekDaysCur[dow]++;
+      }
+    });
+  }
+  
+  // คำนวณวันของสัปดาห์ก่อนหน้า (25-31 ส.ค.)
+  for (var pday = pDim - 6; pday <= pDim; pday++) {
+    var pdt = new Date(pMY, pM - 1, pday);
+    var pdow = (pdt.getDay() + 6) % 7;
+    var pdts = toTs(pday, pM, pMY);
+    AD.forEach(function(d) {
+      if (getRowTs(d) === pdts) {
+        weeklyPrev++;
+        weekDaysPrev[pdow]++;
+      }
+    });
+  }
+  
+  var weeklyDiff = weeklyCur - weeklyPrev;
+  var weeklyPct = weeklyPrev > 0 ? Math.round((weeklyDiff / weeklyPrev) * 100) : (weeklyCur > 0 ? 100 : 0);
+  
+  // 3. Monthly: เดือนนี้ (กันยายน 2569) vs เดือนก่อน (สิงหาคม 2569)
+  var monthlyCur = 0, monthlyPrev = 0;
+  var monthsCountCur = Array(12).fill(0);
+  var monthsCountPrev = Array(12).fill(0);
+  
+  AD.forEach(function(d) {
+    var ts = getRowTs(d);
+    if (isNaN(ts)) return;
+    var dt = new Date(ts);
+    var y = dt.getFullYear(), m = dt.getMonth() + 1;
+    if (y === rY) monthsCountCur[m - 1]++;
+    if (y === rY - 1) monthsCountPrev[m - 1]++;
+    if (y === rY && m === rM) monthlyCur++;
+    if (y === pMY && m === pM) monthlyPrev++;
+  });
+  
+  var monthlyDiff = monthlyCur - monthlyPrev;
+  var monthlyPct = monthlyPrev > 0 ? Math.round((monthlyDiff / monthlyPrev) * 100) : (monthlyCur > 0 ? 100 : 0);
+  
+  var shortThMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  
+  return {
+    refDateStr: rD + ' ' + MONTHS_TH[rM - 1] + ' ' + (rY + 543),
+    weekDateStr: '1 - 7 ' + shortThMonths[rM - 1] + ' ' + (rY + 543),
+    monthDateStr: MONTHS_TH[rM - 1] + ' ' + (rY + 543),
+    daily: { cur: dailyCur, prev: dailyPrev, diff: dailyDiff, pct: dailyPct, hoursCur: dailyHoursCur, hoursPrev: dailyHoursPrev },
+    weekly: { cur: weeklyCur, prev: weeklyPrev, diff: weeklyDiff, pct: weeklyPct, daysCur: weekDaysCur, daysPrev: weekDaysPrev },
+    monthly: { cur: monthlyCur, prev: monthlyPrev, diff: monthlyDiff, pct: monthlyPct, monthsCur: monthsCountCur.slice(0, rM), monthsPrev: monthsCountPrev.slice(0, rM), curM: rM }
+  };
+}
+
+function fmtBadge(pct, diff, prevVal, unit) {
+  var isUp = diff > 0, isDown = diff < 0;
+  var cls = isUp ? 'up' : (isDown ? 'down' : 'same');
+  var arrow = isUp ? '↑ +' : (isDown ? '↓ ' : '');
+  var sub = 'จาก' + unit + ' (' + prevVal + ' งาน)';
+  return '<div class="cmp-badge ' + cls + '">' +
+    '<span>' + arrow + Math.abs(pct) + '%</span>' +
+    '<span class="cmp-badge-sub">' + sub + '</span>' +
+    '</div>';
+}
+
+function renderCompareGridHTML(s) {
+  return '<div class="cmp-grid">' +
+    // Card 1: Daily
+    '<div class="cmp-card">' +
+      '<div>' +
+        '<div class="cmp-head">' +
+          '<div class="cmp-head-left"><div class="cmp-icon cmp-icon-d">📅</div><div><div class="cmp-title">งานรายวัน</div><div class="cmp-sub">Daily</div></div></div>' +
+          '<div class="cmp-date">' + s.refDateStr + '</div>' +
+        '</div>' +
+        '<div class="cmp-stat-row">' +
+          '<div class="cmp-stat-left"><span class="cmp-stat-num cmp-num-d">' + s.daily.cur + '</span><span class="cmp-stat-unit">งาน</span></div>' +
+          fmtBadge(s.daily.pct, s.daily.diff, s.daily.prev, 'เมื่อวาน') +
+        '</div>' +
+        '<div class="cmp-chart-box"><canvas id="cmpChartDaily"></canvas></div>' +
+        '<div class="cmp-legend"><span class="cmp-dot" style="background:#0284c7"></span>เมื่อวาน <span class="cmp-dot" style="background:#38bdf8;margin-left:8px"></span>วันนี้</div>' +
+      '</div>' +
+      '<div class="cmp-footer">' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">เมื่อวาน</div><div class="cmp-f-val">' + s.daily.prev + '</div></div>' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">วันนี้</div><div class="cmp-f-val cmp-num-d">' + s.daily.cur + '</div></div>' +
+      '</div>' +
+    '</div>' +
+    // Card 2: Weekly
+    '<div class="cmp-card">' +
+      '<div>' +
+        '<div class="cmp-head">' +
+          '<div class="cmp-head-left"><div class="cmp-icon cmp-icon-w">📅</div><div><div class="cmp-title">งานรายสัปดาห์</div><div class="cmp-sub">Weekly</div></div></div>' +
+          '<div class="cmp-date">' + s.weekDateStr + '</div>' +
+        '</div>' +
+        '<div class="cmp-stat-row">' +
+          '<div class="cmp-stat-left"><span class="cmp-stat-num cmp-num-w">' + s.weekly.cur + '</span><span class="cmp-stat-unit">งาน</span></div>' +
+          fmtBadge(s.weekly.pct, s.weekly.diff, s.weekly.prev, 'สัปดาห์ก่อน') +
+        '</div>' +
+        '<div class="cmp-chart-box"><canvas id="cmpChartWeekly"></canvas></div>' +
+        '<div class="cmp-legend"><span class="cmp-dot" style="background:#047857"></span>สัปดาห์ก่อน <span class="cmp-dot" style="background:#10b981;margin-left:8px"></span>สัปดาห์นี้</div>' +
+      '</div>' +
+      '<div class="cmp-footer">' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">สัปดาห์ก่อน</div><div class="cmp-f-val">' + s.weekly.prev + '</div></div>' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">สัปดาห์นี้</div><div class="cmp-f-val cmp-num-w">' + s.weekly.cur + '</div></div>' +
+      '</div>' +
+    '</div>' +
+    // Card 3: Monthly
+    '<div class="cmp-card">' +
+      '<div>' +
+        '<div class="cmp-head">' +
+          '<div class="cmp-head-left"><div class="cmp-icon cmp-icon-m">📅</div><div><div class="cmp-title">งานรายเดือน</div><div class="cmp-sub">Monthly</div></div></div>' +
+          '<div class="cmp-date">' + s.monthDateStr + '</div>' +
+        '</div>' +
+        '<div class="cmp-stat-row">' +
+          '<div class="cmp-stat-left"><span class="cmp-stat-num cmp-num-m">' + s.monthly.cur + '</span><span class="cmp-stat-unit">งาน</span></div>' +
+          fmtBadge(s.monthly.pct, s.monthly.diff, s.monthly.prev, 'เดือนก่อน') +
+        '</div>' +
+        '<div class="cmp-chart-box"><canvas id="cmpChartMonthly"></canvas></div>' +
+        '<div class="cmp-legend"><span class="cmp-dot" style="background:#6b21a8"></span>เดือนก่อน <span class="cmp-dot" style="background:#c084fc;margin-left:8px"></span>เดือนนี้</div>' +
+      '</div>' +
+      '<div class="cmp-footer">' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">เดือนก่อน</div><div class="cmp-f-val">' + s.monthly.prev + '</div></div>' +
+        '<div class="cmp-f-col"><div class="cmp-f-lbl">เดือนนี้</div><div class="cmp-f-val cmp-num-m">' + s.monthly.cur + '</div></div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderCompareCharts(s) {
+  var baseOpt = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { cornerRadius: 8, padding: 8 } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10, family: 'Noto Sans Thai, sans-serif' } } },
+      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 9 }, maxTicksLimit: 4 }, beginAtZero: true }
+    }
+  };
+
+  // 1. Daily Chart: แสดง 2 แท่งคู่กัน (เมื่อวาน vs วันนี้)
+  var elD = document.getElementById('cmpChartDaily');
+  if (elD) {
+    CH.cmpDaily = new Chart(elD, {
+      type: 'bar',
+      data: {
+        labels: ['เมื่อวาน', 'วันนี้'],
+        datasets: [{
+          label: 'จำนวนงาน',
+          data: [s.daily.prev, s.daily.cur],
+          backgroundColor: ['#0284c7', '#38bdf8'],
+          borderRadius: 6,
+          barPercentage: 0.5,
+          categoryPercentage: 0.8
+        }]
+      },
+      options: {
+        ...baseOpt,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            cornerRadius: 8,
+            padding: 8,
+            callbacks: {
+              label: function(ctx) { return ctx.raw + ' งาน'; }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 2. Weekly Chart
+  var elW = document.getElementById('cmpChartWeekly');
+  if (elW) {
+    CH.cmpWeekly = new Chart(elW, {
+      type: 'bar',
+      data: {
+        labels: ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'],
+        datasets: [
+          { label: 'สัปดาห์ก่อน', data: s.weekly.daysPrev, backgroundColor: '#047857', borderRadius: 4, barPercentage: 0.8 },
+          { label: 'สัปดาห์นี้', data: s.weekly.daysCur, backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.8 }
+        ]
+      },
+      options: baseOpt
+    });
+  }
+
+  // 3. Monthly Chart
+  var elM = document.getElementById('cmpChartMonthly');
+  if (elM) {
+    var shortMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'].slice(0, s.monthly.curM);
+    CH.cmpMonthly = new Chart(elM, {
+      type: 'bar',
+      data: {
+        labels: shortMonths,
+        datasets: [
+          { label: 'ปีก่อน/เดือนก่อน', data: s.monthly.monthsPrev, backgroundColor: '#6b21a8', borderRadius: 4, barPercentage: 0.8 },
+          { label: 'เดือนนี้/ปีนี้', data: s.monthly.monthsCur, backgroundColor: '#c084fc', borderRadius: 4, barPercentage: 0.8 }
+        ]
+      },
+      options: baseOpt
+    });
+  }
+}
+
+
+// ── In-Progress Tasks Management ──────────────────────────────────────────
+var INPROG_VIEW_MODE = 'all'; // 'all' or 'filtered'
+var INPROG_SEARCH_QUERY = '';
+
+function getInProgList() {
+  const allProg = AD.filter(d => (d.สถานะ || '').includes('กำลัง'));
+  const filteredProg = getOVD().filter(d => (d.สถานะ || '').includes('กำลัง'));
+  const isFilteredActive = (RANGE_START && RANGE_END);
+  
+  let targetList = (isFilteredActive && INPROG_VIEW_MODE === 'filtered') ? filteredProg : allProg;
+  
+  if (INPROG_SEARCH_QUERY) {
+    const q = INPROG_SEARCH_QUERY.trim().toLowerCase();
+    targetList = targetList.filter(d => 
+      (d['เลข Ticket']||'').toLowerCase().includes(q) ||
+      (d['งาน']||'').toLowerCase().includes(q) ||
+      (d['ผู้รับผิดชอบ']||'').toLowerCase().includes(q) ||
+      (d['ประเภทงาน']||'').toLowerCase().includes(q) ||
+      (d['ความเร่งด่วน']||'').toLowerCase().includes(q) ||
+      (d['หมายเหตุ']||'').toLowerCase().includes(q)
+    );
+  }
+  return targetList;
+}
+
+function renderInProgTableRows(list) {
+  if (!list || list.length === 0) {
+    return `<tr><td colspan="9"><div style="text-align:center;padding:32px 16px;color:var(--t2)"><span style="font-size:28px;display:block;margin-bottom:8px">🎉</span><div style="font-weight:600;font-size:13px;color:#10b981">ไม่มีงานค้างที่กำลังดำเนินการ${INPROG_SEARCH_QUERY ? ' ที่ตรงกับคำค้นหา' : ''}</div><div style="font-size:11px;color:var(--t3);margin-top:4px">ทุกรายการได้รับการดำเนินการเสร็จสิ้นเรียบร้อยแล้ว</div></div></td></tr>`;
+  }
+  return list.map((d, i) => {
+    const isUrgent = (d['ความเร่งด่วน']||'').includes('พิเศษ');
+    return `
+      <tr class="inprog-row ${isUrgent?'row-urgent':''}" onclick="openEdit('${d._id}')">
+        <td style="color:var(--t3);font-size:10px;text-align:center;width:36px">${i+1}</td>
+        <td style="width:130px"><span class="ticket-badge" style="font-weight:700">${d['เลข Ticket']||'-'}</span></td>
+        <td style="color:var(--t3);white-space:nowrap;font-size:10px;width:85px">${d.วันที่||'-'}</td>
+        <td style="font-size:11px;font-weight:600;color:var(--t1,#f8fafc);line-height:1.4">${d.งาน||'-'}</td>
+        <td style="width:105px">${sbType(d.ประเภทงาน)}</td>
+        <td style="width:130px">${sbUrgency(d.ความเร่งด่วน)}</td>
+        <td style="font-size:11px;width:150px">
+          <span class="assignee-tag">👤 ${d.ผู้รับผิดชอบ||'-'}</span>
+        </td>
+        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--t3)" title="${d.หมายเหตุ||''}">
+          ${d.หมายเหตุ||'-'}
+        </td>
+        <td style="text-align:center;width:75px" onclick="event.stopPropagation()">
+          <button class="btn-action-edit" onclick="openEdit('${d._id}')" title="คลิกเพื่อแก้ไข/อัปเดตงาน">✎ แก้ไข</button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function renderInProgressSectionHTML() {
+  const allProg = AD.filter(d => (d.สถานะ || '').includes('กำลัง'));
+  const filteredProg = getOVD().filter(d => (d.สถานะ || '').includes('กำลัง'));
+  const isFilteredActive = (RANGE_START && RANGE_END);
+  const targetList = getInProgList();
+
+  let filterPills = '';
+  if (isFilteredActive) {
+    filterPills = `
+      <div class="inprog-mode-toggle">
+        <button class="inprog-pill ${INPROG_VIEW_MODE==='all'?'on':''}" onclick="setInProgMode('all')">ทั้งหมด (${allProg.length})</button>
+        <button class="inprog-pill ${INPROG_VIEW_MODE==='filtered'?'on':''}" onclick="setInProgMode('filtered')">ตามช่วงเวลา (${filteredProg.length})</button>
+      </div>`;
+  }
+
+  return `
+    <div class="inprog-card" id="inprogSection">
+      <div class="inprog-head">
+        <div class="inprog-head-left">
+          <div class="inprog-icon">⏳</div>
+          <div>
+            <div class="inprog-title">
+              งานที่กำลังดำเนินการ (In-Progress Tasks)
+              <span class="inprog-badge" id="inprogBadgeCount">${targetList.length} งาน</span>
+            </div>
+            <div class="inprog-sub">รายการงานที่กำลังทำอยู่และรออัปเดตสถานะให้เสร็จสิ้น</div>
+          </div>
+        </div>
+        <div class="inprog-head-right">
+          ${filterPills}
+          <div class="inprog-search-box">
+            <span class="inprog-search-icon">🔍</span>
+            <input type="text" id="inprogSearch" placeholder="ค้นหางาน..." value="${INPROG_SEARCH_QUERY}" oninput="onInProgSearch(this.value)" />
+          </div>
+          <button class="inprog-btn-all" onclick="goToDataTableWithStatus('กำลังดำเนินการ')">
+            ดูในตารางเต็ม ➔
+          </button>
+        </div>
+      </div>
+      <div class="inprog-table-wrap">
+        <table class="inprog-table">
+          <thead>
+            <tr>
+              <th style="width:36px;text-align:center">#</th>
+              <th style="width:130px">Ticket</th>
+              <th style="width:85px">วันที่แจ้ง</th>
+              <th>ชื่องาน / รายละเอียด</th>
+              <th style="width:105px">ประเภทงาน</th>
+              <th style="width:130px">ความเร่งด่วน</th>
+              <th style="width:150px">ผู้รับผิดชอบ</th>
+              <th style="width:180px">หมายเหตุ</th>
+              <th style="width:75px;text-align:center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="inprogTbody">
+            ${renderInProgTableRows(targetList)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function onInProgSearch(val) {
+  INPROG_SEARCH_QUERY = val;
+  const list = getInProgList();
+  const tb = document.getElementById('inprogTbody');
+  if (tb) tb.innerHTML = renderInProgTableRows(list);
+  const bdg = document.getElementById('inprogBadgeCount');
+  if (bdg) bdg.textContent = list.length + ' งาน';
+}
+
+function setInProgMode(mode) {
+  INPROG_VIEW_MODE = mode;
+  const section = document.getElementById('inprogSection');
+  if (section) {
+    section.outerHTML = renderInProgressSectionHTML();
+  }
+}
+
+function scrollToInProg() {
+  const el = document.getElementById('inprogSection');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('highlight-pulse');
+    setTimeout(() => { el.classList.remove('highlight-pulse'); }, 2000);
+  }
+}
+
+function goToDataTableWithStatus(status) {
+  sw('d');
+  const sel = document.getElementById('fst');
+  if (sel) {
+    sel.value = status;
+    af();
+  }
+}
+
+function renderOv() {
+  const OVD = getOVD();
+  const t = OVD.length;
+  const done = OVD.filter(d => (d.สถานะ || '').includes('เรียบร้อย')).length;
+  const prog = OVD.filter(d => (d.สถานะ || '').includes('กำลัง')).length;
+  const urg1 = OVD.filter(d => (d.ความเร่งด่วน || '').includes('พิเศษ')).length;
+  const claim = OVD.filter(d => (d.ประเภทงาน || '') === 'Claim').length;
+  const people = new Set(OVD.flatMap(d => (d.ผู้รับผิดชอบ || '').split(',').map(x => x.trim()).filter(Boolean))).size;
+
+  var cmpStats = calcPeriodStats();
+  const allProgCount = AD.filter(d => (d.สถานะ || '').includes('กำลัง')).length;
+  const progSub = (RANGE_START && RANGE_END && allProgCount !== prog) ? `ช่วงนี้ ${prog} / ทั้งหมด ${allProgCount} (คลิกดู ▾)` : 'รอ update (คลิกดู ▾)';
+
+  document.getElementById('co').innerHTML =
+    renderCompareGridHTML(cmpStats) +
+    '<div class="kg">' +
+    kpi('b','งานทั้งหมด', t, 'ทุกรายการ','📋') +
+    kpi('g','เสร็จแล้ว', done, ((t?((done/t)*100).toFixed(1):0) + '%'),'✅') +
+    kpi('a','กำลังดำเนินการ', prog, progSub,'⟳', 'scrollToInProg()') +
+    kpi('r','เร่งด่วนพิเศษ', urg1, '1 วัน','🔴') +
+    kpi('v','งานประเภท Claim', claim, 'งานเคลม','🔧') +
+    kpi('o','ผู้รับผิดชอบ', people, 'คน','👥') +
+    '</div>' +
+    renderInProgressSectionHTML() +
+    '<div class="cg c4">' +
+    chart('สถานะงาน','สัดส่วน Status','cS','200') +
+    chart('ประเภทงาน','แยกตาม Type','cT','200') +
+    chart('ผู้รับผิดชอบ','จำนวนงานแต่ละคน','cW','200') +
+    chart('ความเร่งด่วน','สัดส่วนความเร่งด่วน','cU','200') +
+    '</div>' +
+    '<div class="cg c22">' +
+    chart('งานตามเดือน (Top 6 เดือนล่าสุด)','จำนวนงานรายเดือน','cM','240') +
+    chart('Top 6 ประเภทงาน','จำนวนแยกตามประเภท','cTP','240') +
+    '</div>';
+
+
+  // show date range label on overview
+  var drBanner = document.getElementById('ovDateRangeBanner');
+  var drLabel = document.getElementById('ovDateRange');
+  if (drLabel) {
+    if (RANGE_START && RANGE_END) {
+      drLabel.textContent = '◄ กรอง: ' + RANGE_START.d+'/'+RANGE_START.m+'/'+RANGE_START.y + ' - ' + RANGE_END.d+'/'+RANGE_END.m+'/'+RANGE_END.y;
+      drLabel.style.display = 'inline-block';
+      if(drBanner) drBanner.style.display = 'flex';
+    } else {
+      drLabel.style.display = 'none';
+      if(drBanner) drBanner.style.display = 'none';
+    }
+  }
+  Object.values(CH).forEach(c => { try { c.destroy(); } catch {} }); CH = {};
+  const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+    scales: { x: { ticks: { color: '#64748b', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,.03)' } }, y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } } } };
+  const doOpt = { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 9 }, boxWidth: 10, padding: 6 } } } };
+
+  const sd = cBy(OVD, 'สถานะ');
+  CH.s = new Chart(document.getElementById('cS'), { type: 'doughnut', data: { labels: sd.map(x => x[0].replace('ดำเนินการเรียบร้อย','เสร็จแล้ว').replace('กำลังดำเนินการ','กำลังดำเนิน')), datasets: [{ data: sd.map(x => x[1]), backgroundColor: ['#10b981','#f59e0b','#94a3b8'], borderColor: '#0f1a2e', borderWidth: 2 }] }, options: doOpt });
+  const td = cBy(OVD, 'ประเภทงาน').slice(0, 8);
+  CH.t = new Chart(document.getElementById('cT'), { type: 'doughnut', data: { labels: td.map(x => x[0].length > 18 ? x[0].substring(0,18)+'…' : x[0]), datasets: [{ data: td.map(x => x[1]), backgroundColor: CC, borderColor: '#0f1a2e', borderWidth: 2 }] }, options: doOpt });
+  const wd = cBy(OVD, 'ผู้รับผิดชอบ').slice(0, 8);
+  CH.w = new Chart(document.getElementById('cW'), { type: 'bar', data: { labels: wd.map(x => x[0].length > 15 ? x[0].substring(0,15)+'…' : x[0]), datasets: [{ data: wd.map(x => x[1]), backgroundColor: CC, borderRadius: 5 }] }, options: { ...opt, indexAxis: 'y' } });
+  const ud = cBy(OVD, 'ความเร่งด่วน');
+  const urgLabel = ud.map(x => x[0].includes('พิเศษ') ? 'เร่งด่วนพิเศษ' : x[0].includes('1-3') ? 'เร่งด่วน 1-3 วัน' : 'ไม่เร่งด่วน');
+  CH.u = new Chart(document.getElementById('cU'), { type: 'doughnut', data: { labels: urgLabel, datasets: [{ data: ud.map(x => x[1]), backgroundColor: ['#f43f5e','#f59e0b','#10b981'], borderColor: '#0f1a2e', borderWidth: 2 }] }, options: doOpt });
+
+  // Monthly
+  const monthly = {};
+  OVD.forEach(d => {
+    if (!d.วันที่) return;
+    const p = d.วันที่.split('/');
+    if (p.length >= 3) {
+      let y = parseInt(p[2]); const m = parseInt(p[1]);
+      if (y > 2400) y -= 543;
+      const key = y + '-' + String(m).padStart(2,'0');
+      monthly[key] = (monthly[key] || 0) + 1;
+    }
+  });
+  const mKeys = Object.keys(monthly).sort().slice(-6);
+  const thMonths = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const mLabels = mKeys.map(k => { const [y,m] = k.split('-'); return thMonths[parseInt(m)] + ' ' + (parseInt(y)+543).toString().substring(2); });
+  CH.m = new Chart(document.getElementById('cM'), { type: 'line', data: { labels: mLabels, datasets: [{ data: mKeys.map(k => monthly[k] || 0), borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,.12)', tension: .4, fill: true, pointBackgroundColor: '#8b5cf6', pointRadius: 5, borderWidth: 2 }] }, options: { ...opt, plugins: { legend: { display: false } } } });
+  const tpd = cBy(OVD, 'ประเภทงาน').slice(0, 6);
+  CH.tp = new Chart(document.getElementById('cTP'), { type: 'bar', data: { labels: tpd.map(x => x[0].length > 20 ? x[0].substring(0,20)+'…' : x[0]), datasets: [{ data: tpd.map(x => x[1]), backgroundColor: CC, borderRadius: 5 }] }, options: { ...opt, indexAxis: 'y' } });
+
+  // Render 3 Period Comparison Charts (Daily, Weekly, Monthly)
+  renderCompareCharts(cmpStats);
+}
+
+function kpi(cls, label, val, sub, ic, onclickFn) {
+  const clickAttr = onclickFn ? ` onclick="${onclickFn}" style="cursor:pointer" title="คลิกเพื่อดูรายการ"` : '';
+  return `<div class="kc ${cls}"${clickAttr}><div class="kl">${label}</div><div class="kv">${val}</div><div class="ks">${sub}</div><div class="ki">${ic}</div></div>`;
+}
+function chart(title, sub, cid, h) {
+  return `<div class="cc"><div class="ct">${title}</div><div class="cs">${sub}</div><div class="cw${h==='240'?' tall':''}"><canvas id="${cid}"></canvas></div></div>`;
+}
+
+// ===== Unified Date Range & Preset Filter =====
+var ACTIVE_PRESET = 'all'; // 'all' | 'today' | '7d' | 'this-month' | 'prev-month' | 'custom'
+var RANGE_START = null; // {d,m,y}
+var RANGE_END   = null;
+var RANGE_HOVER = null;
+var CAL_YEAR = new Date().getFullYear();
+var CAL_MON  = new Date().getMonth();
+var CAL_OPEN = false;
+var MONTHS_TH = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+
+function getDateField() {
+  if (!AD.length) return "วันที่";
+  var keys = Object.keys(AD[0]);
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i].indexOf("วัน") >= 0 || keys[i].toLowerCase().indexOf("date") >= 0) return keys[i];
+  }
+  return keys[1] || keys[0];
+}
+
+function toTs(d, m, y) {
+  return new Date(y, m - 1, d).getTime();
+}
+
+function getRowTs(d) {
+  var df = getDateField();
+  var v = (d[df] || "").trim();
+  var p = v.split('/');
+  if (p.length >= 3) {
+    var rd = parseInt(p[0]);
+    var rm = parseInt(p[1]);
+    var ry = parseInt(p[2]);
+    if (ry > 2400) ry -= 543;
+    else if (ry < 100) ry += 2000;
+    return toTs(rd, rm, ry);
+  }
+  return NaN;
+}
+
+function getDataDatesSet() {
+  var df = getDateField(), s = new Set();
+  AD.forEach(function(r) {
+    var v = (r[df] || "").trim();
+    var p = v.split("/");
+    if (p.length >= 3) {
+      var y = parseInt(p[2]);
+      if (y > 2400) y -= 543;
+      else if (y < 100) y += 2000;
+      s.add(parseInt(p[0]) + "/" + parseInt(p[1]) + "/" + y);
+    }
+  });
+  return s;
+}
+
+function selectPreset(type) {
+  ACTIVE_PRESET = type;
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth() + 1;
+  var d = now.getDate();
+
+  if (type === 'all') {
+    RANGE_START = null;
+    RANGE_END = null;
+  } else if (type === 'today') {
+    RANGE_START = { d: d, m: m, y: y };
+    RANGE_END   = { d: d, m: m, y: y };
+  } else if (type === '7d') {
+    var past = new Date(now.getTime() - 6 * 86400000);
+    RANGE_START = { d: past.getDate(), m: past.getMonth() + 1, y: past.getFullYear() };
+    RANGE_END   = { d: d, m: m, y: y };
+  } else if (type === 'this-month') {
+    var dim = new Date(y, m, 0).getDate();
+    RANGE_START = { d: 1, m: m, y: y };
+    RANGE_END   = { d: dim, m: m, y: y };
+  } else if (type === 'prev-month') {
+    var prevM = new Date(y, m - 2, 1);
+    var py = prevM.getFullYear();
+    var pm = prevM.getMonth() + 1;
+    var pdim = new Date(py, pm, 0).getDate();
+    RANGE_START = { d: 1, m: pm, y: py };
+    RANGE_END   = { d: pdim, m: pm, y: py };
+  }
+
+  RANGE_HOVER = null;
+  updatePresetUI();
+  renderCalendar();
+  af();
+}
+
+function updatePresetUI() {
+  ['all', 'today', '7d', 'this-month', 'prev-month'].forEach(function(k) {
+    var el = document.getElementById('pf-' + k);
+    if (el) el.classList.toggle('on', ACTIVE_PRESET === k);
+  });
+
+  var btn = document.getElementById('calBtn');
+  var lbl = document.getElementById('calBtnLabel');
+  var banner = document.getElementById('ovDateRangeBanner');
+  var bannerTxt = document.getElementById('ovDateRange');
+
+  if (ACTIVE_PRESET === 'custom' && RANGE_START && RANGE_END) {
+    if (btn) btn.classList.add('has-sel');
+    var txt = RANGE_START.d + '/' + RANGE_START.m + ' - ' + RANGE_END.d + '/' + RANGE_END.m;
+    if (lbl) lbl.textContent = txt;
+    if (bannerTxt) bannerTxt.textContent = 'กรองช่วงวัน: ' + RANGE_START.d + '/' + RANGE_START.m + '/' + RANGE_START.y + ' ถึง ' + RANGE_END.d + '/' + RANGE_END.m + '/' + RANGE_END.y;
+    if (banner) banner.style.display = 'flex';
+  } else if (ACTIVE_PRESET !== 'all' && RANGE_START && RANGE_END) {
+    if (btn) btn.classList.remove('has-sel');
+    if (lbl) lbl.textContent = 'กำหนดวันเอง';
+    var pLabels = {
+      'today': 'วันนี้ (' + RANGE_START.d + '/' + RANGE_START.m + '/' + RANGE_START.y + ')',
+      '7d': '7 วันล่าสุด (' + RANGE_START.d + '/' + RANGE_START.m + ' - ' + RANGE_END.d + '/' + RANGE_END.m + ')',
+      'this-month': 'เดือนนี้ (' + MONTHS_TH[RANGE_START.m - 1] + ' ' + RANGE_START.y + ')',
+      'prev-month': 'เดือนที่แล้ว (' + MONTHS_TH[RANGE_START.m - 1] + ' ' + RANGE_START.y + ')'
+    };
+    if (bannerTxt) bannerTxt.textContent = 'กรองช่วงเวลา: ' + (pLabels[ACTIVE_PRESET] || '');
+    if (banner) banner.style.display = 'flex';
+  } else {
+    if (btn) btn.classList.remove('has-sel');
+    if (lbl) lbl.textContent = 'กำหนดวันเอง';
+    if (banner) banner.style.display = 'none';
+  }
+}
+
+function inRange(d, m, y) {
+  if (!RANGE_START) return false;
+  var ts = toTs(d, m, y);
+  var end = RANGE_END || RANGE_HOVER;
+  if (!end) return ts === toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y);
+  var a = toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y);
+  var b = toTs(end.d, end.m, end.y);
+  if (a > b) { var tmp = a; a = b; b = tmp; }
+  return ts >= a && ts <= b;
+}
+function isStart(d, m, y) {
+  return RANGE_START && d === RANGE_START.d && m === RANGE_START.m && y === RANGE_START.y;
+}
+function isEnd(d, m, y) {
+  var end = RANGE_END || RANGE_HOVER;
+  if (!end) return false;
+  return d === end.d && m === end.m && y === end.y;
+}
+
+function renderCalendar() {
+  var today = new Date(), dateDots = getDataDatesSet();
+  var lbl = document.getElementById("calMonthLabel");
+  if (lbl) lbl.textContent = MONTHS_TH[CAL_MON] + " " + CAL_YEAR;
+  var first = new Date(CAL_YEAR, CAL_MON, 1), startDay = (first.getDay() + 6) % 7;
+  var dim = new Date(CAL_YEAR, CAL_MON + 1, 0).getDate();
+  var prevDim = new Date(CAL_YEAR, CAL_MON, 0).getDate();
+  var dows = ["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"];
+  var html = "";
+  dows.forEach(function(d) { html += '<div class="cal-dow">' + d + '</div>'; });
+  for (var i = 0; i < startDay; i++) {
+    html += '<div class="cal-day other-month">' + (prevDim - startDay + 1 + i) + '</div>';
+  }
+  for (var d = 1; d <= dim; d++) {
+    var m = CAL_MON + 1, key = d + "/" + m + "/" + CAL_YEAR;
+    var isT = (d === today.getDate() && m === today.getMonth() + 1 && CAL_YEAR === today.getFullYear());
+    var rng = inRange(d, m, CAL_YEAR), strt = isStart(d, m, CAL_YEAR), en = isEnd(d, m, CAL_YEAR);
+    var cls = "cal-day" + (strt ? " range-start" : "") + (en ? " range-end" : "") + (rng && !strt && !en ? " in-range" : "") + (isT ? " today" : "") + (dateDots.has(key) ? " has-data" : "");
+    html += '<div class="' + cls + '" onclick="calClick(' + d + ',' + m + ',' + CAL_YEAR + ')" onmouseenter="calHover(' + d + ',' + m + ',' + CAL_YEAR + ')" data-ts="' + toTs(d, m, CAL_YEAR) + '">' + d + '</div>';
+  }
+  var rem = (7 - (startDay + dim) % 7) % 7;
+  for (var d2 = 1; d2 <= rem; d2++) html += '<div class="cal-day other-month">' + d2 + '</div>';
+  var grid = document.getElementById("calGrid");
+  if (grid) grid.innerHTML = html;
+  updateCalStepInfo();
+}
+
+function calClick(d, m, y) {
+  if (!RANGE_START || RANGE_END) {
+    // 1st click: set start, clear end
+    ACTIVE_PRESET = 'custom';
+    RANGE_START = { d: d, m: m, y: y };
+    RANGE_END = null;
+    RANGE_HOVER = null;
+    updatePresetUI();
+    renderCalendar();
+    af();
+  } else {
+    // 2nd click: set end, close popup, auto-switch to overview
+    ACTIVE_PRESET = 'custom';
+    var ts1 = toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y);
+    var ts2 = toTs(d, m, y);
+    if (ts2 < ts1) { RANGE_END = RANGE_START; RANGE_START = { d: d, m: m, y: y }; }
+    else { RANGE_END = { d: d, m: m, y: y }; }
+    RANGE_HOVER = null;
+    CAL_OPEN = false;
+    var p = document.getElementById("calPopup");
+    if (p) p.classList.remove("open");
+    updatePresetUI();
+    renderCalendar();
+    sw("o");
+    af();
+  }
+}
+
+function calHover(d, m, y) {
+  if (RANGE_START && !RANGE_END) {
+    RANGE_HOVER = { d: d, m: m, y: y };
+    updateRangeHighlight();
+  }
+}
+
+function updateRangeHighlight() {
+  var cells = document.querySelectorAll("#calGrid .cal-day:not(.other-month)");
+  cells.forEach(function(cell) {
+    var ts = parseInt(cell.getAttribute("data-ts"));
+    if (isNaN(ts)) return;
+    var dt = new Date(ts);
+    var d = dt.getDate(), m = dt.getMonth() + 1, y = dt.getFullYear();
+    var rng = inRange(d, m, y), strt = isStart(d, m, y), en = isEnd(d, m, y);
+    cell.classList.toggle("range-start", strt);
+    cell.classList.toggle("range-end", en);
+    cell.classList.toggle("in-range", rng && !strt && !en);
+  });
+  updateCalStepInfo();
+}
+
+function calMove(dir) {
+  CAL_MON += dir;
+  if (CAL_MON > 11) { CAL_MON = 0; CAL_YEAR++; }
+  if (CAL_MON < 0) { CAL_MON = 11; CAL_YEAR--; }
+  renderCalendar();
+}
+
+function calSelectMonth() {
+  var dim = new Date(CAL_YEAR, CAL_MON + 1, 0).getDate();
+  RANGE_START = { d: 1, m: CAL_MON + 1, y: CAL_YEAR };
+  RANGE_END   = { d: dim, m: CAL_MON + 1, y: CAL_YEAR };
+  RANGE_HOVER = null;
+  ACTIVE_PRESET = 'custom';
+  CAL_OPEN = false;
+  var p = document.getElementById("calPopup");
+  if (p) p.classList.remove("open");
+  updatePresetUI();
+  renderCalendar();
+  sw("o");
+  af();
+}
+
+function calClear() {
+  selectPreset('all');
+}
+
+function updateCalStepInfo() {
+  var stepEl = document.getElementById("calStepIndicator");
+  var infoEl = document.getElementById("calSelInfo");
+  if (!RANGE_START || (RANGE_START && RANGE_END)) {
+    if (stepEl) {
+      stepEl.className = "cal-step-indicator";
+      stepEl.innerHTML = '<span class="csi-badge">ขั้นตอนที่ 1</span> คลิกเลือก <strong>วันเริ่มต้น</strong>';
+    }
+    if (infoEl) {
+      if (RANGE_START && RANGE_END) {
+        var diff = Math.round(Math.abs(toTs(RANGE_END.d, RANGE_END.m, RANGE_END.y) - toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y)) / 86400000) + 1;
+        infoEl.textContent = "เลือก: " + RANGE_START.d + "/" + RANGE_START.m + "/" + RANGE_START.y + " → " + RANGE_END.d + "/" + RANGE_END.m + "/" + RANGE_END.y + " (" + diff + " วัน)";
+      } else {
+        infoEl.textContent = "คลิกเลือกวันเริ่มต้น แล้วตามด้วยวันสิ้นสุด";
+      }
+    }
+  } else {
+    if (stepEl) {
+      stepEl.className = "cal-step-indicator step-2";
+      stepEl.innerHTML = '<span class="csi-badge">ขั้นตอนที่ 2</span> คลิกเลือก <strong>วันสิ้นสุด</strong> (เริ่ม: ' + RANGE_START.d + '/' + RANGE_START.m + '/' + RANGE_START.y + ')';
+    }
+    if (infoEl) {
+      var h = RANGE_HOVER;
+      if (h) {
+        var diff2 = Math.round(Math.abs(toTs(h.d, h.m, h.y) - toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y)) / 86400000) + 1;
+        infoEl.textContent = RANGE_START.d + "/" + RANGE_START.m + " → " + h.d + "/" + h.m + " (" + diff2 + " วัน)";
+      } else {
+        infoEl.textContent = "เริ่ม: " + RANGE_START.d + "/" + RANGE_START.m + "/" + RANGE_START.y + " → คลิกเลือกวันสิ้นสุด";
+      }
+    }
+  }
+}
+
+function toggleCal(e) {
+  e.stopPropagation();
+  CAL_OPEN = !CAL_OPEN;
+  var p = document.getElementById("calPopup");
+  if (p) p.classList.toggle("open", CAL_OPEN);
+  if (CAL_OPEN) {
+    if (AD.length) {
+      var df2 = getDateField();
+      var latestTs = -1, latestDate = null;
+      AD.forEach(function(r) {
+        var v = (r[df2] || "").trim();
+        var p = v.split("/");
+        if (p.length >= 3) {
+          var dy = parseInt(p[2]);
+          if (dy > 2400) dy -= 543;
+          else if (dy < 100) dy += 2000;
+          var ts = toTs(parseInt(p[0]), parseInt(p[1]), dy);
+          if (ts > latestTs) { latestTs = ts; latestDate = { m: parseInt(p[1]) - 1, y: dy }; }
+        }
+      });
+      if (latestDate && (!RANGE_START || RANGE_END)) {
+        CAL_MON = latestDate.m;
+        CAL_YEAR = latestDate.y;
+      }
+    }
+    renderCalendar();
+  }
+}
+
+document.addEventListener("click", function(e) {
+  if (CAL_OPEN && !e.target.closest("#calBtn") && !e.target.closest("#calPopup")) {
+    CAL_OPEN = false;
+    var p = document.getElementById("calPopup");
+    if (p) p.classList.remove("open");
+  }
+});
+
+function bFO() {
+  const fill = (id, key, valFn) => {
+    const sel = document.getElementById(id), f = sel.options[0];
+    sel.innerHTML = ''; sel.appendChild(f);
+    const vals = valFn ? [...new Set(AD.flatMap(d => (d[key]||'').split(',').map(x=>x.trim()).filter(Boolean)))] : [...new Set(AD.map(d => d[key]).filter(Boolean))];
+    vals.sort().forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v.length > 35 ? v.substring(0,35)+'…' : v; sel.appendChild(o); });
+  };
+  fill('fst','สถานะ'); fill('ftp','ประเภทงาน'); fill('fur','ความเร่งด่วน'); fill('fwh','ผู้รับผิดชอบ', true);
+}
+
+// ── Filter & Table ────────────────────────────────────────────────────────
+function af() {
+  const s = document.getElementById('si').value.toLowerCase();
+  const st = document.getElementById('fst').value, tp = document.getElementById('ftp').value;
+  const ur = document.getElementById('fur').value, wh = document.getElementById('fwh').value;
+  FD = AD.filter(d => {
+    if (s) { const h = [d['เลข Ticket'], d.งาน, d.ผู้รับผิดชอบ, d.หมายเหตุ, d.ประเภทงาน].join(' ').toLowerCase(); if (!h.includes(s)) return false; }
+    if (st && d.สถานะ !== st) return false;
+    if (tp && d.ประเภทงาน !== tp) return false;
+    if (ur && d.ความเร่งด่วน !== ur) return false;
+    if (wh && !(d.ผู้รับผิดชอบ || '').includes(wh)) return false;
+    if (RANGE_START && RANGE_END) {
+      var a = toTs(RANGE_START.d, RANGE_START.m, RANGE_START.y);
+      var b = toTs(RANGE_END.d, RANGE_END.m, RANGE_END.y);
+      if (a > b) { var tmp2 = a; a = b; b = tmp2; }
+      var rts = getRowTs(d);
+      if (isNaN(rts) || rts < a || rts > b) return false;
+    }
+    return true;
+  }); CP = 1; rt();
+  // อัปเดต dashboard เสมอ (ทั้ง 2 tab)
+  renderOv();
+}
+function rst() { selectPreset('all'); document.getElementById('si').value = ''; ['fst', 'ftp', 'fur', 'fwh'].forEach(id => document.getElementById(id).value = ''); af(); }
+
+function rt() {
+  const tot = FD.length;
+  document.getElementById('rc').textContent = tot.toLocaleString();
+  document.getElementById('ro').textContent = 'จาก ' + AD.length + ' รายการ';
+  const st = (CP-1)*PS, sl = FD.slice(st, st+PS), tb = document.getElementById('tb');
+  if (!sl.length) { tb.innerHTML = '<tr><td colspan="11"><div class="empty"><span class="ic">🔍</span><p>ไม่พบข้อมูล</p></div></td></tr>'; document.getElementById('pg').innerHTML=''; return; }
+  tb.innerHTML = sl.map((d, i) => {
+    const globalIdx = FD.findIndex(r => r._id === d._id) + 1;
+    const isLocal = d._src === 'local' || d._src === 'edited';
+    return `<tr class="${isLocal?'local-row':''}" onclick="openEdit('${d._id}')">
+      <td style="color:var(--t3);font-size:10px;text-align:center;width:32px">${globalIdx}</td>
+      <td><span class="ticket-badge">${d['เลข Ticket']||'-'}</span></td>
+      <td style="color:var(--t3);white-space:nowrap;font-size:10px">${d.วันที่||'-'}</td>
+      <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px" title="${d.งาน||''}">${d.งาน||'-'}</td>
+      <td>${sbType(d.ประเภทงาน)}</td>
+      <td>${sbUrgency(d.ความเร่งด่วน)}</td>
+      <td>${sbStatus(d.สถานะ)}</td>
+      <td style="font-size:10px;color:var(--t2)">${d.ผู้รับผิดชอบ||'-'}</td>
+      <td style="color:var(--t3);white-space:nowrap;font-size:10px">${d['วันที่ดำเนินการเสร็จ']||'-'}</td>
+      <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--t3)" title="${d.หมายเหตุ||''}">${d.หมายเหตุ||'-'}</td>
+      <td onclick="event.stopPropagation()">
+        <button style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#a78bfa;border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:inherit" onclick="openEdit('${d._id}')">✎ แก้ไข</button>
+      </td>
+    </tr>`;
+  }).join(''); rpg(tot);
+}
+function rpg(tot) {
+  const pages = Math.ceil(tot/PS), el = document.getElementById('pg');
+  if (pages <= 1) { el.innerHTML=''; return; }
+  let h = '';
+  if (CP > 1) h += `<button class="pb" onclick="gp(${CP-1})">‹</button>`;
+  const s = Math.max(1, CP-2), e = Math.min(pages, CP+2);
+  if (s > 1) h += `<button class="pb" onclick="gp(1)">1</button>${s>2?'<span class="pi">…</span>':''}`;
+  for (let p = s; p <= e; p++) h += `<button class="pb${p===CP?' on':''}" onclick="gp(${p})">${p}</button>`;
+  if (e < pages) h += `${e<pages-1?'<span class="pi">…</span>':''}<button class="pb" onclick="gp(${pages})">${pages}</button>`;
+  if (CP < pages) h += `<button class="pb" onclick="gp(${CP+1})">›</button>`;
+  h += `<span class="pi">หน้า ${CP}/${pages}</span>`; el.innerHTML = h;
+}
+function gp(p) { CP=p; rt(); document.querySelector('.tw').scrollIntoView({behavior:'smooth',block:'start'}); }
+
+// ── Tab switch ────────────────────────────────────────────────────────────
+function sw(t) { ['o','d'].forEach(x => { document.getElementById('c'+x).style.display = x===t?'block':'none'; document.getElementById('t'+x).classList.toggle('on', x===t); }); }
+
+// ── Generate Ticket No ────────────────────────────────────────────────────
+function genTicket() {
+  const now = new Date();
+  const yy = now.getFullYear().toString().slice(-2);   // ปีค.ศ. 2 หลัก: 2026 → "26"
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const dd = String(now.getDate()).padStart(2,'0');
+  const prefix = `ITS-${yy}${mm}${dd}-`;
+  const same = AD.filter(d => (d['เลข Ticket']||'').startsWith(prefix)).length;
+  return prefix + String(same+1).padStart(3,'0');
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────
+function selOpts(opts, val) {
+  return opts.map(o => `<option value="${o}" ${o===val?'selected':''}>${o}</option>`).join('');
+}
+function formField(label, name, val, type='text') {
+  return `<div class="mf"><label>${label}</label><input type="${type}" name="${name}" value="${val||''}" placeholder="${label}..."/></div>`;
+}
+function formSelect(label, name, val, opts) {
+  return `<div class="mf"><label>${label}</label><select name="${name}"><option value="">-- เลือก --</option>${selOpts(opts, val)}</select></div>`;
+}
+function formTextarea(label, name, val) {
+  return `<div class="mf full"><label>${label}</label><textarea name="${name}">${val||''}</textarea></div>`;
+}
+function formPersonCheck(label, currentVal) {
+  const hasTom = currentVal.includes('ต้อม');
+  const hasSun = currentVal.includes('ซัน');
+  return `<div class="mf full">
+    <label>${label}</label>
+    <div class="person-group">
+      <label class="person-btn">
+        <input type="checkbox" name="_person_tom" value="ต้อม (ฝึกงาน)" ${hasTom?'checked':''}>
+        <span class="avatar av-tom">ต้อม</span>
+        <span>ต้อม (ฝึกงาน)</span>
+      </label>
+      <label class="person-btn">
+        <input type="checkbox" name="_person_sun" value="ซัน" ${hasSun?'checked':''}>
+        <span class="avatar av-sun">ซัน</span>
+        <span>ซัน</span>
+      </label>
+    </div>
+  </div>`;
+}
+
+function openAdd() {
+  editId = null;
+  document.getElementById('mt').textContent = '＋ เพิ่มงานใหม่';
+  document.getElementById('confirmDel').style.display = 'none';
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-cancel" onclick="closeMo()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveRecord()">💾 บันทึก</button>`;
+  const ticket = genTicket();
+  const today = (() => { const d=new Date(); return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); })();
+  document.getElementById('mc').innerHTML =
+    `<div class="mf"><label>เลข Ticket (Auto — แก้ไขได้)</label><input name="เลข Ticket" value="${ticket}" placeholder="ITS-YYMMDD-XXX"/></div>` +
+    formField('วันที่ (วัน/เดือน/ปี พ.ศ.)', 'วันที่', today) +
+    formField('งาน / รายละเอียด', 'งาน', '') +
+    formSelect('ประเภทงาน', 'ประเภทงาน', '', TYPE_OPTIONS) +
+    formSelect('ความเร่งด่วน', 'ความเร่งด่วน', 'เร่งด่วนพิเศษ (1 วัน)', URGENCY_OPTIONS) +
+    formSelect('สถานะ', 'สถานะ', 'กำลังดำเนินการ', STATUS_OPTIONS) +
+    formPersonCheck('ผู้รับผิดชอบ (เลือกได้มากกว่า 1 คน)', '') +
+    formField('วันที่ดำเนินการเสร็จ', 'วันที่ดำเนินการเสร็จ', '') +
+    formTextarea('หมายเหตุ', 'หมายเหตุ', '');
+  document.getElementById('mo').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function openEdit(id) {
+  const d = AD.find(r => r._id === id); if (!d) return;
+  editId = id;
+  document.getElementById('mt').textContent = '✎ แก้ไขงาน';
+  document.getElementById('confirmDel').style.display='none';
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-del" onclick="confirmDelete('${id}','${(d['เลข Ticket']||'').replace(/'/g,"\\'")}')">🗑 ลบ</button>
+    <div style="flex:1"></div>
+    <button class="btn-cancel" onclick="closeMo()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveRecord()">💾 บันทึก</button>`;
+  document.getElementById('mc').innerHTML =
+    `<div class="mf"><label>เลข Ticket</label><input name="เลข Ticket" value="${d['เลข Ticket']||''}"/></div>` +
+    formField('วันที่', 'วันที่', d.วันที่) +
+    formField('งาน / รายละเอียด', 'งาน', d.งาน) +
+    formSelect('ประเภทงาน', 'ประเภทงาน', d.ประเภทงาน, TYPE_OPTIONS) +
+    formSelect('ความเร่งด่วน', 'ความเร่งด่วน', d.ความเร่งด่วน, URGENCY_OPTIONS) +
+    formSelect('สถานะ', 'สถานะ', d.สถานะ, STATUS_OPTIONS) +
+    formPersonCheck('ผู้รับผิดชอบ (เลือกได้มากกว่า 1 คน)', d.ผู้รับผิดชอบ||'') +
+    formField('วันที่ดำเนินการเสร็จ', 'วันที่ดำเนินการเสร็จ', d['วันที่ดำเนินการเสร็จ']) +
+    formTextarea('หมายเหตุ', 'หมายเหตุ', d.หมายเหตุ);
+  document.getElementById('mo').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function getFormData() {
+  const fields = {};
+  // Regular inputs and selects
+  document.querySelectorAll('#mc [name]').forEach(el => {
+    if (el.name.startsWith('_person_')) return; // handled separately
+    if (el.tagName === 'INPUT' && el.type === 'checkbox') return;
+    fields[el.name] = el.value;
+  });
+  // Person checkboxes
+  const checked = [];
+  const tom = document.querySelector('#mc input[name="_person_tom"]');
+  const sun = document.querySelector('#mc input[name="_person_sun"]');
+  if (tom && tom.checked) checked.push('ต้อม (ฝึกงาน)');
+  if (sun && sun.checked) checked.push('ซัน');
+  if (checked.length > 0) fields['ผู้รับผิดชอบ'] = checked.join(', ');
+  return fields;
+}
+
+function saveRecord() {
+  const data = getFormData();
+  if (!data.งาน || !data.งาน.trim()) { alert('กรุณากรอกรายละเอียดงาน'); return; }
+  if (editId) {
+    const orig = AD.find(r => r._id === editId);
+    if (orig && orig._src === 'local') {
+      // Update in adds array
+      const idx = localData.adds.findIndex(a => a._id === editId);
+      if (idx >= 0) localData.adds[idx] = { ...localData.adds[idx], ...data };
+    } else {
+      if (!localData.edits) localData.edits = {};
+      localData.edits[editId] = { ...data, _id: editId, _src: 'edited' };
+    }
+  } else {
+    const id = '_local_' + Date.now();
+    if (!localData.adds) localData.adds = [];
+    localData.adds.push({ ...data, _id: id, _src: 'local' });
+  }
+  saveLocal(); closeMo(); loadData();
+  // Auto-sync to Google Sheets
+  (async () => {
+    try {
+      await sendToGAS(editId ? {action:'edit',data:{...localData.edits[editId]||{},_id:editId}} : {action:'add',data:(localData.adds||[]).slice(-1)[0]||{}});
+      showToast('✅ บันทึกลง Google Sheets เรียบร้อย!');
+    } catch(e){ showToast('⚠️ บันทึก Local สำเร็จ (ออฟไลน์)','warn'); }
+  })();
+}
+
+function confirmDelete(id, ticket) {
+  document.getElementById('delTicket').textContent = ticket;
+  document.getElementById('confirmDel').style.display = 'block';
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn-cancel" onclick="document.getElementById('confirmDel').style.display='none'; openEdit('${id}')">ยกเลิก</button>
+    <button class="btn-del" onclick="deleteRecord('${id}')">🗑 ยืนยันลบ</button>`;
+}
+
+function deleteRecord(id) {
+  const rec = AD.find(r => r._id === id);
+  if (rec && rec._src === 'local') {
+    localData.adds = (localData.adds||[]).filter(a => a._id !== id);
+  } else {
+    if (!localData.deletes) localData.deletes = [];
+    if (!localData.deletes.includes(id)) localData.deletes.push(id);
+    if (localData.edits) delete localData.edits[id];
+  }
+  // Auto-delete from Google Sheets
+  if (!(rec && rec._src === 'local')) {
+    const _tid = id;
+    (async () => {
+      try { await sendToGAS({action:'delete',ticketId:_tid}); showToast('??️ ลบจาก Google Sheets เรียบร้อย!'); }
+      catch(e){ showToast('⚠️ ลบ Local สำเร็จ (ออฟไลน์)','warn'); }
+    })();
+  }
+  saveLocal(); closeMo(); loadData();
+}
+
+function saveLocal() { localStorage.setItem(LS_KEY, JSON.stringify(localData)); }
+
+function closeMo() { document.getElementById('mo').classList.remove('open'); document.body.style.overflow=''; }
+function closeMoOuter(e) { if (e.target === document.getElementById('mo')) closeMo(); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeMo(); });
+
+// ── Export CSV ────────────────────────────────────────────────────────────
+function exportCSV() {
+  const headers = ['เลข Ticket','วันที่','งาน','ประเภทงาน','ความเร่งด่วน','สถานะ','ผู้รับผิดชอบ','วันที่ดำเนินการเสร็จ','หมายเหตุ'];
+  const csv = [headers.join(','), ...AD.map(d => headers.map(h => {
+    const v = (d[h]||'').replace(/"/g,'""'); return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v}"` : v;
+  }).join(','))].join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'it_support_work_log_' + new Date().toISOString().substring(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadData();
+setInterval(loadData, 5 * 60 * 1000);
+
+// ── Theme Toggle ───────────────────────────────────────────────────────────
+const THEME_KEY = 'portal_theme';
+function applyTheme(t) {
+  if (t === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  else { document.body.classList.remove('dark'); document.getElementById('themeBtn').textContent = '🌙'; }
+}
+function toggleTheme() {
+  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next); applyTheme(next);
+}
+applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+
+
+// ── ส่งข้อมูลไปยัง Google Apps Script ────────────────────────────────────
+async function sendToGAS(payload) {
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Apps Script error');
+  return json.result;
+}
+
+// ── Toast Notification ────────────────────────────────────────────────────
+function showToast(msg, type) {
+  type = type || 'success';
+  var t = document.getElementById('gasToast');
+  if (!t) {
+    t = document.createElement('div'); t.id = 'gasToast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:opacity .4s;font-family:"Noto Sans Thai","Inter",sans-serif;';
+    document.body.appendChild(t);
+  }
+  var c = { success:'#10b981', warn:'#f59e0b', error:'#f43f5e' };
+  t.style.background = c[type]||c.success; t.style.color='#fff'; t.style.opacity='1';
+  t.textContent = msg;
+  clearTimeout(t._tmr);
+  t._tmr = setTimeout(function(){ t.style.opacity = '0'; }, 4000);
+}
+</script>
+</body>
+</html>
