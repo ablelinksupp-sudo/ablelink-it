@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entity-Relationship (ER) Diagram — IT Support & Claim Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --primary: #2563eb;
+      --text: #0f172a;
+      --text-muted: #64748b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .header p { font-size: 14px; color: var(--text-muted); }
+    .actions { margin-bottom: 20px; display: flex; gap: 12px; }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .btn-secondary:hover { background: #f1f5f9; }
+    .diagram-container {
+      background: #ffffff;
+      padding: 36px 30px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      max-width: 1200px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      min-width: 1000px;
+      display: block;
+    }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .actions, .header p { display: none; }
+      .diagram-container { border: none; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Entity-Relationship Diagram (ER Diagram)</h1>
+    <p>โครงสร้างตารางฐานข้อมูลจริงบน Google Sheets (ตรงตามระบบจริง 100% ไม่มีตารางสมมุติ)</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+    <button class="btn btn-secondary" onclick="window.location.href='use_case_diagram.html'">📊 ดู Use Case Diagram</button>
+    <button class="btn btn-secondary" onclick="window.location.href='portal_home.html'">🏠 กลับหน้าหลัก Portal</button>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1040 560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.07"/>
+        </filter>
+      </defs>
+
+      <!-- System Database Boundary Box -->
+      <rect x="15" y="15" width="1010" height="525" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <text x="520" y="42" font-size="14" font-weight="700" fill="#475569" text-anchor="middle" font-family="'Noto Sans Thai', 'Inter'">
+        📊 ฐานข้อมูลบน Google Sheets (Cloud Spreadsheet Database)
+      </text>
+
+      <!-- ================= ENTITY 1: IT_SUPPORT_LOGS (Left) ================= -->
+      <g filter="url(#shadow)" transform="translate(40, 65)">
+        <rect width="455" height="440" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect width="455" height="38" rx="8" fill="#2563eb"/>
+        <rect y="28" width="455" height="10" fill="#2563eb"/>
+        <text x="227" y="24" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Inter', 'Noto Sans Thai'">💻 IT_SUPPORT_LOGS (ตารางงานไอที)</text>
+        
+        <rect y="38" width="455" height="24" fill="#f1f5f9"/>
+        <text x="12" y="54" font-size="10" font-weight="700" fill="#64748b">FIELD NAME (ชีต: IT Support)</text>
+        <text x="195" y="54" font-size="10" font-weight="700" fill="#64748b">TYPE</text>
+        <text x="270" y="54" font-size="10" font-weight="700" fill="#64748b">DESCRIPTION</text>
+
+        <text x="12" y="80" font-size="11" font-weight="700" fill="#dc2626" font-family="'Fira Code'">PK ticket_no</text>
+        <text x="195" y="80" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(20)</text>
+        <text x="270" y="80" font-size="11" fill="#334155">รหัส Ticket (ITS-YYMMDD-XXX)</text>
+
+        <text x="12" y="105" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">date</text>
+        <text x="195" y="105" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(20)</text>
+        <text x="270" y="105" font-size="11" fill="#334155">วันที่แจ้งงาน (เช่น 21/8/2026)</text>
+
+        <text x="12" y="130" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">detail</text>
+        <text x="195" y="130" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="270" y="130" font-size="11" fill="#334155">งาน / รายละเอียดปัญหาที่แจ้ง</text>
+
+        <text x="12" y="155" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">category</text>
+        <text x="195" y="155" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(80)</text>
+        <text x="270" y="155" font-size="11" fill="#334155">ประเภทงาน (Solve/Hardware ฯลฯ)</text>
+
+        <text x="12" y="180" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">urgency</text>
+        <text x="195" y="180" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(30)</text>
+        <text x="270" y="180" font-size="11" fill="#334155">ความเร่งด่วน (เร่งด่วนพิเศษ/ด่วน/ปกติ)</text>
+
+        <text x="12" y="205" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">status</text>
+        <text x="195" y="205" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(30)</text>
+        <text x="270" y="205" font-size="11" fill="#334155">สถานะ (รอดำเนินการ/เสร็จสิ้น)</text>
+
+        <text x="12" y="230" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">assignee</text>
+        <text x="195" y="230" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(100)</text>
+        <text x="270" y="230" font-size="11" fill="#334155">ผู้รับผิดชอบ (ต้อม / ซัน)</text>
+
+        <text x="12" y="255" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">finish_date</text>
+        <text x="195" y="255" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(20)</text>
+        <text x="270" y="255" font-size="11" fill="#334155">วันที่ดำเนินการเสร็จ</text>
+
+        <text x="12" y="280" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">note</text>
+        <text x="195" y="280" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="270" y="280" font-size="11" fill="#334155">หมายเหตุ / วิธีแก้ไขเพิ่มเติม</text>
+      </g>
+
+      <!-- ================= ENTITY 2: INVENTORY_CLAIMS (Right) ================= -->
+      <g filter="url(#shadow)" transform="translate(535, 65)">
+        <rect width="465" height="440" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect width="465" height="38" rx="8" fill="#059669"/>
+        <rect y="28" width="465" height="10" fill="#059669"/>
+        <text x="232" y="24" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Inter', 'Noto Sans Thai'">📦 INVENTORY_CLAIMS (ตารางงานเคลม)</text>
+        
+        <rect y="38" width="465" height="24" fill="#f1f5f9"/>
+        <text x="12" y="54" font-size="10" font-weight="700" fill="#64748b">FIELD NAME (ชีต: Claim Summary)</text>
+        <text x="200" y="54" font-size="10" font-weight="700" fill="#64748b">TYPE</text>
+        <text x="275" y="54" font-size="10" font-weight="700" fill="#64748b">DESCRIPTION</text>
+
+        <text x="12" y="80" font-size="11" font-weight="700" fill="#dc2626" font-family="'Fira Code'">PK Claim No.</text>
+        <text x="200" y="80" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(30)</text>
+        <text x="275" y="80" font-size="11" fill="#334155">รหัสใบเคลม (CLI-YYYYMMDD-XXX)</text>
+
+        <text x="12" y="105" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Date</text>
+        <text x="200" y="105" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(20)</text>
+        <text x="275" y="105" font-size="11" fill="#334155">วันที่รับส่งเคลม (เช่น 11/8/26)</text>
+
+        <text x="12" y="130" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">User</text>
+        <text x="200" y="130" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(150)</text>
+        <text x="275" y="130" font-size="11" fill="#334155">ชื่อเต็มของบริษัทผู้ส่งเคลม</text>
+
+        <text x="12" y="155" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Customer</text>
+        <text x="200" y="155" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(150)</text>
+        <text x="275" y="155" font-size="11" fill="#334155">บริษัทตัวแทนจำหน่าย (Dealer)</text>
+
+        <text x="12" y="180" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Phone Customer</text>
+        <text x="200" y="180" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(30)</text>
+        <text x="275" y="180" font-size="11" fill="#334155">เบอร์โทรศัพท์ (ยืนยันตัวตนคู่)</text>
+
+        <text x="12" y="205" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Brand / Model</text>
+        <text x="200" y="205" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(80)</text>
+        <text x="275" y="205" font-size="11" fill="#334155">ยี่ห้อ และ รุ่นสินค้า (TVT ฯลฯ)</text>
+
+        <text x="12" y="230" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Serial</text>
+        <text x="200" y="230" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(80)</text>
+        <text x="275" y="230" font-size="11" fill="#334155">หมายเลขประจำเครื่อง (Serial No.)</text>
+
+        <text x="12" y="255" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Symptom Informed</text>
+        <text x="200" y="255" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="275" y="255" font-size="11" fill="#334155">อาการเสียที่แจ้งเบื้องต้น</text>
+
+        <text x="12" y="280" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Inspection Result</text>
+        <text x="200" y="280" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="275" y="280" font-size="11" fill="#334155">ผลการตรวจเช็กจากฝ่ายช่าง</text>
+
+        <text x="12" y="305" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Status</text>
+        <text x="200" y="305" font-size="11" fill="#475569" font-family="'Fira Code'">VARCHAR(50)</text>
+        <text x="275" y="305" font-size="11" fill="#334155">สถานะการเคลม (13 สถานะ)</text>
+
+        <text x="12" y="330" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">Solution</text>
+        <text x="200" y="330" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="275" y="330" font-size="11" fill="#334155">แนวทางแก้ไข / การส่งคืนสินค้า</text>
+
+        <text x="12" y="355" font-size="11" font-weight="600" fill="#1e293b" font-family="'Fira Code'">ภาพสินค้าที่เคลม</text>
+        <text x="200" y="355" font-size="11" fill="#475569" font-family="'Fira Code'">TEXT</text>
+        <text x="275" y="355" font-size="11" fill="#334155">ลิงก์รูปภาพบน Google Drive</text>
+      </g>
+
+    </svg>
+  </div>
+
+</body>
+</html>

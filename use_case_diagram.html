@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Use Case Diagram — IT Support & Claim Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --primary: #2563eb;
+      --text: #0f172a;
+      --text-muted: #64748b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .header p { font-size: 14px; color: var(--text-muted); }
+    .actions { margin-bottom: 20px; display: flex; gap: 12px; }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .btn-secondary:hover { background: #f1f5f9; }
+    .diagram-container {
+      background: #ffffff;
+      padding: 36px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      max-width: 1200px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      min-width: 1020px;
+      display: block;
+    }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .actions, .header p { display: none; }
+      .diagram-container { border: none; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Use Case Diagram</h1>
+    <p>ระบบพอร์ทัลจัดการงานบริการไอทีและติดตามสถานะการเคลมสินค้า (ตรงตามระบบจริง 100%)</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+    <button class="btn btn-secondary" onclick="window.location.href='er_diagram.html'">🗂️ ดู ER Diagram</button>
+    <button class="btn btn-secondary" onclick="window.location.href='portal_home.html'">🏠 กลับหน้าหลัก Portal</button>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1080 840" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+        </marker>
+        <marker id="open-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 1 2 L 9 5 L 1 8" fill="none" stroke="#2563eb" stroke-width="1.5" />
+        </marker>
+        <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.08"/>
+        </filter>
+      </defs>
+
+      <!-- System Boundary Box -->
+      <rect x="220" y="25" width="640" height="790" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 4"/>
+      <rect x="220" y="25" width="640" height="40" rx="16" fill="#e2e8f0"/>
+      <rect x="220" y="50" width="640" height="15" fill="#e2e8f0"/>
+      <text x="540" y="52" font-size="15" font-weight="700" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai', 'Inter'">
+        ขอบเขตระบบ: IT Support &amp; Claim Portal System
+      </text>
+
+      <!-- Subsystem 1: Auth & Portal -->
+      <rect x="240" y="80" width="600" height="135" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="255" y="102" font-size="12.5" font-weight="700" fill="#475569" font-family="'Noto Sans Thai'">🔐 ระบบพอร์ทัลและยืนยันตัวตน (Portal &amp; Authentication)</text>
+
+      <!-- Subsystem 2: IT Work Log -->
+      <rect x="240" y="225" width="600" height="235" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="255" y="247" font-size="12.5" font-weight="700" fill="#2563eb" font-family="'Noto Sans Thai'">🔧 ระบบบันทึกงานบริการไอที (IT Work Log)</text>
+
+      <!-- Subsystem 3: Claim Dashboard -->
+      <rect x="240" y="470" width="600" height="175" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="255" y="492" font-size="12.5" font-weight="700" fill="#059669" font-family="'Noto Sans Thai'">📦 ระบบจัดการงานเคลมสินค้าสำหรับเจ้าหน้าที่ (Claim Dashboard)</text>
+
+      <!-- Subsystem 4: Customer Claim Tracking -->
+      <rect x="240" y="655" width="600" height="145" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="255" y="677" font-size="12.5" font-weight="700" fill="#d97706" font-family="'Noto Sans Thai'">🔍 ระบบติดตามสถานะเคลมสำหรับลูกค้า (Customer Claim Tracking)</text>
+
+      <!-- ================= USE CASES ================= -->
+
+      <!-- UC 1: Login -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="145" rx="90" ry="22" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+        <text x="360" y="149" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">เข้าสู่ระบบ (Login)</text>
+      </g>
+      <!-- UC 2: Logout -->
+      <g filter="url(#shadow)">
+        <ellipse cx="545" cy="145" rx="75" ry="22" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+        <text x="545" y="149" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ออกจากระบบ</text>
+      </g>
+      <!-- UC 3: Toggle Theme -->
+      <g filter="url(#shadow)">
+        <ellipse cx="715" cy="145" rx="85" ry="22" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+        <text x="715" y="149" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">สลับธีม (Light/Dark)</text>
+      </g>
+
+      <!-- UC 4: Add IT Log -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="290" rx="95" ry="22" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+        <text x="360" y="294" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">บันทึกงานบริการไอที</text>
+      </g>
+      <!-- UC 5: Auto Ticket Gen (Included) -->
+      <g filter="url(#shadow)">
+        <ellipse cx="690" cy="290" rx="95" ry="22" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="690" y="294" font-size="12" font-weight="600" fill="#1e40af" text-anchor="middle" font-family="'Noto Sans Thai'">ออกเลข Ticket อัตโนมัติ</text>
+      </g>
+      <!-- UC 6: Edit / Delete IT Log -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="350" rx="95" ry="22" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+        <text x="360" y="354" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">แก้ไขและลบงานไอที</text>
+      </g>
+      <!-- UC 7: Search & Filter IT -->
+      <g filter="url(#shadow)">
+        <ellipse cx="690" cy="350" rx="95" ry="22" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+        <text x="690" y="354" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ค้นหาและกรองงานไอที</text>
+      </g>
+      <!-- UC 8: IT Dashboard -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="410" rx="95" ry="22" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+        <text x="360" y="414" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ดู Dashboard สถิติงานไอที</text>
+      </g>
+
+      <!-- UC 9: Update Claim Status / Inspection -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="535" rx="100" ry="23" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+        <text x="360" y="539" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">อัปเดตผลตรวจเช็ก/สถานะเคลม</text>
+      </g>
+      <!-- UC 10: Search & Filter Claims -->
+      <g filter="url(#shadow)">
+        <ellipse cx="690" cy="535" rx="95" ry="23" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+        <text x="690" y="539" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ค้นหาและกรองรายการเคลม</text>
+      </g>
+      <!-- UC 11: Claim Dashboard -->
+      <g filter="url(#shadow)">
+        <ellipse cx="360" cy="600" rx="100" ry="23" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+        <text x="360" y="604" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ดู Dashboard สถิติการเคลม</text>
+      </g>
+      <!-- UC 12: Export CSV -->
+      <g filter="url(#shadow)">
+        <ellipse cx="690" cy="600" rx="90" ry="23" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+        <text x="690" y="604" font-size="12" font-weight="600" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ส่งออกข้อมูลเป็น CSV</text>
+      </g>
+
+      <!-- UC 13: Customer Track Status (Dual Verification) -->
+      <g filter="url(#shadow)">
+        <ellipse cx="440" cy="725" rx="150" ry="25" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+        <text x="440" y="729" font-size="12" font-weight="700" fill="#92400e" text-anchor="middle" font-family="'Noto Sans Thai'">ค้นหาและติดตามสถานะเคลม (ยืนยันตัวตน 2 ชั้น)</text>
+      </g>
+      <!-- UC 14: View 5-Step Timeline & Details (Included) -->
+      <g filter="url(#shadow)">
+        <ellipse cx="720" cy="725" rx="105" ry="25" fill="#fef3c7" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="720" y="729" font-size="11.5" font-weight="600" fill="#78350f" text-anchor="middle" font-family="'Noto Sans Thai'">ดูความคืบหน้า 5 ขั้นตอน (Accordion)</text>
+      </g>
+
+      <!-- ================= ACTOR 1: ADMIN (LEFT) ================= -->
+      <g transform="translate(50, 310)">
+        <circle cx="45" cy="25" r="16" fill="#eff6ff" stroke="#1d4ed8" stroke-width="3"/>
+        <line x1="45" y1="41" x2="45" y2="85" stroke="#1d4ed8" stroke-width="3"/>
+        <line x1="15" y1="58" x2="75" y2="58" stroke="#1d4ed8" stroke-width="3"/>
+        <line x1="45" y1="85" x2="20" y2="125" stroke="#1d4ed8" stroke-width="3"/>
+        <line x1="45" y1="85" x2="70" y2="125" stroke="#1d4ed8" stroke-width="3"/>
+        <text x="45" y="150" font-size="13.5" font-weight="700" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">เจ้าหน้าที่ IT / Admin</text>
+        <rect x="0" y="158" width="90" height="20" rx="10" fill="#dbeafe"/>
+        <text x="45" y="172" font-size="10" font-weight="700" fill="#1e40af" text-anchor="middle">Primary Actor</text>
+      </g>
+
+      <!-- ================= ACTOR 2: CUSTOMER (RIGHT) ================= -->
+      <g transform="translate(930, 620)">
+        <circle cx="45" cy="25" r="16" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+        <line x1="45" y1="41" x2="45" y2="85" stroke="#d97706" stroke-width="3"/>
+        <line x1="15" y1="58" x2="75" y2="58" stroke="#d97706" stroke-width="3"/>
+        <line x1="45" y1="85" x2="20" y2="125" stroke="#d97706" stroke-width="3"/>
+        <line x1="45" y1="85" x2="70" y2="125" stroke="#d97706" stroke-width="3"/>
+        <text x="45" y="150" font-size="13.5" font-weight="700" fill="#1e293b" text-anchor="middle" font-family="'Noto Sans Thai'">ลูกค้า / ผู้ส่งเคลม</text>
+        <rect x="0" y="158" width="90" height="20" rx="10" fill="#fef3c7"/>
+        <text x="45" y="172" font-size="10" font-weight="700" fill="#92400e" text-anchor="middle">Primary Actor</text>
+      </g>
+
+      <!-- ================= ACTOR 3: GOOGLE CLOUD ================= -->
+      <g transform="translate(925, 330)">
+        <rect x="0" y="15" width="110" height="70" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+        <text x="55" y="44" font-size="20" text-anchor="middle">☁️</text>
+        <text x="55" y="65" font-size="11" font-weight="700" fill="#065f46" text-anchor="middle" font-family="'Noto Sans Thai'">Google Cloud</text>
+        <text x="55" y="78" font-size="9" fill="#047857" text-anchor="middle">Sheets &amp; Apps Script</text>
+        <rect x="5" y="94" width="100" height="20" rx="10" fill="#d1fae5"/>
+        <text x="55" y="108" font-size="10" font-weight="700" fill="#065f46" text-anchor="middle">Supporting Actor</text>
+      </g>
+
+      <!-- ================= ASSOCIATION LINES ================= -->
+
+      <!-- Admin Associations -->
+      <line x1="125" y1="360" x2="275" y2="145" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="470" y2="145" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="630" y2="145" stroke="#64748b" stroke-width="1.5"/>
+      
+      <line x1="125" y1="360" x2="265" y2="290" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="265" y2="350" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="265" y2="410" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="595" y2="350" stroke="#64748b" stroke-width="1.5"/>
+
+      <line x1="125" y1="360" x2="260" y2="535" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="595" y2="535" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="260" y2="600" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="125" y1="360" x2="600" y2="600" stroke="#64748b" stroke-width="1.5"/>
+
+      <!-- Customer Associations -->
+      <line x1="930" y1="680" x2="590" y2="725" stroke="#d97706" stroke-width="1.8"/>
+
+      <!-- Includes: Add IT Log -> Auto Ticket Gen -->
+      <line x1="455" y1="290" x2="595" y2="290" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#open-arrow)"/>
+      <text x="525" y="282" font-size="10" font-weight="700" fill="#2563eb" text-anchor="middle">&lt;&lt;include&gt;&gt;</text>
+
+      <!-- Includes: Track Status -> View Timeline -->
+      <line x1="590" y1="725" x2="615" y2="725" stroke="#d97706" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#open-arrow)"/>
+      <text x="605" y="717" font-size="10" font-weight="700" fill="#d97706" text-anchor="middle">&lt;&lt;include&gt;&gt;</text>
+
+      <!-- Cloud Sync Connections -->
+      <line x1="785" y1="290" x2="925" y2="350" stroke="#059669" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <line x1="460" y1="535" x2="925" y2="380" stroke="#059669" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <line x1="440" y1="700" x2="925" y2="400" stroke="#059669" stroke-width="1.5" stroke-dasharray="5 3"/>
+
+    </svg>
+  </div>
+
+</body>
+</html>
